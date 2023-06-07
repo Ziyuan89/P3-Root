@@ -5,4 +5,4 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AuD-2023-P3-Root"
+rootProject.name = "P3-Root"
