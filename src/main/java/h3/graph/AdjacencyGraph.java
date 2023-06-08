@@ -2,8 +2,12 @@ package h3.graph;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class AdjacencyGraph<N> implements Graph<N> {
 
@@ -27,6 +31,10 @@ public class AdjacencyGraph<N> implements Graph<N> {
         }
     }
 
+    public AdjacencyGraph(List<N> nodes, Set<Edge<N>> edges) {
+        this(new HashSet<>(nodes), edges);
+    }
+
     @Override
     public Set<N> getNodes() {
         return nodes;
@@ -39,6 +47,8 @@ public class AdjacencyGraph<N> implements Graph<N> {
 
     @Override
     public Set<Edge<N>> getAdjacentEdges(N node) {
-        return null;
+        return IntStream.of(matrix.getAdjacent(nodeIndices.get(node)))
+            .mapToObj(adj -> Edge.of(node, indexNodes.get(adj), matrix.getWeight(nodeIndices.get(node), adj)))
+            .collect(Collectors.toUnmodifiableSet());
     }
 }
