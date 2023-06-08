@@ -1,4 +1,7 @@
-package h3.graph;
+package h3.solver;
+
+import h3.graph.BasicGraph;
+import h3.graph.Graph;
 
 import java.util.ArrayList;
 import java.util.HashSet;

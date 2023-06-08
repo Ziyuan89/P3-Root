@@ -1,4 +1,6 @@
-package h3.graph;
+package h3.solver;
+
+import h3.graph.Graph;
 
 public interface MSTFactory {
 
