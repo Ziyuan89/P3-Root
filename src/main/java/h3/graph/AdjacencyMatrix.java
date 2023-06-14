@@ -43,17 +43,12 @@ public class AdjacencyMatrix {
     /**
      * Returns an array of the weights of the edges adjacent to the given index.
      *
-     * <p>
-     * Does not include the weight of the edge from the given index to itself. (Which is always 0.)
-     * </p>
-     *
      * @param index the index of the node to get the adjacent edges of
      * @return an array of the weights of the edges adjacent to the given index
      */
     public int[] getAdjacent(int index) {
-        int[] adjacent = new int[matrix.length - 1];
-        System.arraycopy(matrix[index], 0, adjacent, 0, index);
-        System.arraycopy(matrix[index], index + 1, adjacent, index, matrix.length - index - 1);
+        int[] adjacent = new int[matrix.length];
+        System.arraycopy(matrix[index], 0, adjacent, 0, adjacent.length);
         return adjacent;
     }
 }
