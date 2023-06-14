@@ -1,11 +1,25 @@
 package h3.solver;
 
+import h3.graph.AdjacencyGraph;
+import h3.graph.EdgeImpl;
 import h3.graph.Graph;
 import h3.graph.Graph.Edge;
 
 import java.util.*;
 
 public class DijkstraPathCalculator<N> implements PathCalculator<N> {
+
+    public static void main(String[] args) {
+        Character a = 'A', b = 'B', c = 'C', d = 'D';
+        Graph<Character> graph = new AdjacencyGraph<>(Set.of(a, b, c, d), Set.of(
+            new EdgeImpl<>(a, b, 1),
+            new EdgeImpl<>(a, c, 4),
+            new EdgeImpl<>(b, c, 5),
+            new EdgeImpl<>(b, d, 1)
+        ));
+        List<Character> shortestPath = new DijkstraPathCalculator<>(graph).calculatePath(a, d);
+        System.out.println();
+    }
 
     private final Graph<N> graph;
     private Map<N, Integer> distance = new HashMap<>();
@@ -21,19 +35,14 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
         Set<N> remainingNodes = new HashSet<>(graph.getNodes());
 
         while (!remainingNodes.isEmpty()) {
-            N node = distance.entrySet()
-                .stream()
-                .filter(entry -> remainingNodes.contains(entry.getKey()))
-                .min(Comparator.comparingInt(Map.Entry::getValue))
-                .orElseThrow()
-                .getKey();
+            N node = extractMin(remainingNodes);
             remainingNodes.remove(node);
 
             Set<Edge<N>> neighbors = graph.getAdjacentEdges(node);
             for (Edge<N> neighborEdge : neighbors) {
                 N neighborNode = neighborEdge.getA() == node ? neighborEdge.getB() : neighborEdge.getA();
                 if (remainingNodes.contains(neighborNode)) {
-                    updateDistance(node, neighborNode, neighborEdge);
+                    relax(node, neighborNode, neighborEdge);
                 }
             }
         }
@@ -59,7 +68,16 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
         distance.put(start, 0);
     }
 
-    private void updateDistance(N via, N dest, Edge<N> edge) {
+    private N extractMin(Set<N> remainingNodes) {
+        return distance.entrySet()
+            .stream()
+            .filter(entry -> remainingNodes.contains(entry.getKey()))
+            .min(Comparator.comparingInt(Map.Entry::getValue))
+            .orElseThrow()
+            .getKey();
+    }
+
+    private void relax(N via, N dest, Edge<N> edge) {
         int newDistance = distance.get(via) + edge.getWeight();
         if (newDistance < distance.get(dest)) {
             distance.put(dest, newDistance);
