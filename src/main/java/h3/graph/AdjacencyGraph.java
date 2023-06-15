@@ -52,8 +52,5 @@ public class AdjacencyGraph<N> implements Graph<N> {
             .mapToObj(i -> Edge.of(node, indexNodes.get(i), matrix.getWeight(nodeIndices.get(node), i)))
             .filter(edge -> edge.getWeight() > 0)
             .collect(Collectors.toSet());
-//        return IntStream.of(matrix.getAdjacent(nodeIndices.get(node)))
-//            .mapToObj(adj -> Edge.of(node, indexNodes.get(adj), matrix.getWeight(nodeIndices.get(node), adj)))
-//            .collect(Collectors.toUnmodifiableSet());
     }
 }
