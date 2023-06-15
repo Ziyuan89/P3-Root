@@ -1,9 +1,8 @@
 package h3.gui;
 
+import h3.graph.EdgeImpl;
 import h3.graph.Graph;
 import javafx.scene.Node;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
@@ -44,17 +43,10 @@ public class GraphPane<N> extends Pane {
     private final Text positionText = new Text();
 
     private final Map<LocationNode<N>, LabeledNode> nodes = new HashMap<>();
+    private final Map<N, LocationNode<N>> nodeLocations = new HashMap<>();
     private final Map<Graph.Edge<LocationNode<N>>, LabeledEdge> edges = new HashMap<>();
 
     private final List<Node> grid = new ArrayList<>();
-
-    private LocationNode<N> selectedNode;
-    private Consumer<? super LocationNode<N>> nodeSelectionHandler;
-    private Consumer<? super LocationNode<N>> nodeRemoveSelectionHandler;
-
-    private Graph.Edge<LocationNode<N>> selectedEdge;
-    private Consumer<? super Graph.Edge<LocationNode<N>>> edgeSelectionHandler;
-    private Consumer<? super Graph.Edge<LocationNode<N>>> edgeRemoveSelectionHandler;
 
     private boolean alreadyCentered = false;
 
@@ -65,16 +57,25 @@ public class GraphPane<N> extends Pane {
         this(List.of(), List.of());
     }
 
+    public GraphPane(Graph<N> graph, Map<N, Location> nodeLocations) {
+        this(graph.getNodes().stream().map(node -> new LocationNode<>(node, nodeLocations.get(node))).toList(),
+            graph.getEdges().stream().map(edge -> new EdgeImpl<>(
+                new LocationNode<>(edge.getA(), nodeLocations.get(edge.getA())),
+                new LocationNode<>(edge.getB(), nodeLocations.get(edge.getB())),
+                edge.getWeight())
+            ).toList());
+    }
+
     /**
      * Creates a new {@link GraphPane}, displays the given components and centers itself.
      *
-     * @param nodes    The {@linkplain LocationNode nodes} to display.
-     * @param edges    The {@linkplain Graph.Edge edges} to display.
+     * @param nodes The {@linkplain LocationNode nodes} to display.
+     * @param edges The {@linkplain Graph.Edge edges} to display.
      */
-    public GraphPane(Collection<? extends LocationNode<N>> nodes,
+    private GraphPane(Collection<? extends LocationNode<N>> nodes,
                      Collection<? extends Graph.Edge<LocationNode<N>>> edges) {
 
-        //avoid division by zero when scale = 1
+        // avoid division by zero when scale = 1
         transformation.scale(MIN_SCALE, MIN_SCALE);
 
         for (Graph.Edge<LocationNode<N>> edge : edges) {
@@ -100,12 +101,6 @@ public class GraphPane<N> extends Pane {
      * @param edge The {@linkplain Graph.Edge edge} to display.
      */
     public void addEdge(Graph.Edge<LocationNode<N>> edge) {
-        if (selectedNode != null) {
-            if (edge.getA().equals(selectedNode) || edge.getB().equals(selectedNode)) {
-                handleNodeClick(nodes.get(selectedNode).ellipse(), selectedNode);
-            }
-        }
-
         edges.put(edge, drawEdge(edge));
     }
 
@@ -136,51 +131,33 @@ public class GraphPane<N> extends Pane {
     }
 
     /**
-     * Returns the {@linkplain Graph.Edge edge} selected by the user by clicking onto it or its name.
+     * Updates the color used to draw the given {@linkplain Graph.Edge edge}.
      *
-     * @return The {@linkplain Graph.Edge edge} selected by the user or null if no {@linkplain Graph.Edge edge} is selected.
+     * @param edge  The {@linkplain Graph.Edge edge} to update.
+     * @param color The new color.
+     * @throws IllegalArgumentException If the given {@linkplain Graph.Edge edge} is not part of this {@link GraphPane}.
      */
-    public Graph.Edge<LocationNode<N>> getSelectedEdge() {
-        return selectedEdge;
-    }
+    public synchronized void setEdgeColor(Graph.Edge<N> edge, Color color) {
+        LabeledEdge labeledEdge = edges.get(new EdgeImpl<>(
+            new LocationNode<>(edge.getA(), nodeLocations.get(edge.getA()).location()),
+            new LocationNode<>(edge.getB(), nodeLocations.get(edge.getB()).location()),
+            edge.getWeight()));
 
-    /**
-     * Selects the given {@linkplain Graph.Edge edge} and executes the action set by {@link #onEdgeSelection(Consumer)}.
-     * <p>This is equivalent to clicking manually on the {@linkplain Graph.Edge edge}.</p>
-     *
-     * @throws IllegalArgumentException if the given {@linkplain Graph.Edge edge} is not part of this {@link GraphPane}
-     * @param edge the edge to select
-     */
-    public void selectEdge(Graph.Edge<LocationNode<N>> edge) {
-        if (!edges.containsKey(edge)) {
+        if (labeledEdge == null) {
             throw new IllegalArgumentException("The given edge is not part of this GraphPane");
         }
 
-        handleEdgeClick(edges.get(edge).line(), edge);
-    }
-    /**
-     * Sets the action that is supposed to be executed when the user selects an {@linkplain Graph.Edge edge}.
-     *
-     * @param edgeSelectionHandler The {@link Consumer} that executes the action.
-     *                             The apply method of the {@link Consumer} will be called with
-     *                             the selected {@linkplain Graph.Edge edge} as the parameter.
-     */
-    public void onEdgeSelection(Consumer<? super Graph.Edge<LocationNode<N>>> edgeSelectionHandler) {
-        this.edgeSelectionHandler = edgeSelectionHandler;
+        labeledEdge.setStrokeColor(color);
     }
 
     /**
-     * Sets the action that is supposed to be executed when the user removes the selection of an {@linkplain Graph.Edge edge}.<p>
-     * When a different {@linkplain Graph.Edge edge} is selected than the previous one only the action set by
-     * {@link #onEdgeSelection(Consumer) will be executed.
-     * <p>
+     * Resets the color used to draw the given {@linkplain Graph.Edge edge} to the default color ({@link #EDGE_COLOR}).
      *
-     * @param edgeRemoveSelectionHandler The {@link Consumer} that executes the action.
-     *                                   The apply method of the {@link Consumer} will be called with
-     *                                   the previously selected {@linkplain Graph.Edge edge} as the parameter.
+     * @param edge The {@linkplain Graph.Edge edge} to update.
+     * @throws IllegalArgumentException If the given {@linkplain Graph.Edge edge} is not part of this {@link GraphPane}.
      */
-    public void onEdgeRemoveSelection(Consumer<? super Graph.Edge<LocationNode<N>>> edgeRemoveSelectionHandler) {
-        this.edgeRemoveSelectionHandler = edgeRemoveSelectionHandler;
+    public synchronized void resetEdgeColor(Graph.Edge<N> edge) {
+        setEdgeColor(edge, EDGE_COLOR);
     }
 
     /**
@@ -228,6 +205,7 @@ public class GraphPane<N> extends Pane {
      */
     public void addNode(LocationNode<N> node) {
         nodes.put(node, drawNode(node));
+        nodeLocations.put(node.value(), node);
     }
 
     /**
@@ -258,52 +236,30 @@ public class GraphPane<N> extends Pane {
     }
 
     /**
-     * Returns the {@linkplain LocationNode node} selected by the user by clicking onto it or its name.
+     * Updates the color used to draw the given {@linkplain N node}.
      *
-     * @return The {@linkplain LocationNode node} selected by the user or null if no {@linkplain LocationNode node} is selected.
+     * @param node  The {@linkplain N node} to update.
+     * @param color The new color.
+     * @throws IllegalArgumentException If the given {@linkplain N node} is not part of this {@link GraphPane}.
      */
-    public LocationNode<N> getSelectedNode() {
-        return selectedNode;
-    }
+    public void setNodeColor(N node, Color color) {
+        LabeledNode labeledNode = nodes.get(new LocationNode<>(node, nodeLocations.get(node).location()));
 
-    /**
-     * Selects the given {@linkplain LocationNode node} and executes the action set by {@link #onNodeSelection(Consumer)}.
-     * <p>This is equivalent to clicking manually on the {@linkplain LocationNode node}.</p>
-     *
-     * @throws IllegalArgumentException if the given {@linkplain LocationNode node} is not part of this {@link GraphPane}
-     * @param node the node to select
-     */
-    public void selectNode(LocationNode<N> node) {
-        if (!nodes.containsKey(node)) {
+        if (labeledNode == null) {
             throw new IllegalArgumentException("The given node is not part of this GraphPane");
         }
 
-        handleNodeClick(nodes.get(node).ellipse(), node);
+        labeledNode.setStrokeColor(color);
     }
 
     /**
-     * Sets the action that is supposed to be executed when the user selects an {@linkplain LocationNode node}.
+     * Resets the color used to draw the given {@linkplain N node} to the default color ({@link #NODE_COLOR}).
      *
-     * @param nodeSelectionHandler The {@link Consumer} that executes the action.
-     *                             The apply method of the {@link Consumer} will be called with
-     *                             the selected {@linkplain LocationNode node} as the parameter.
+     * @param node The {@linkplain N node} to update.
+     * @throws IllegalArgumentException If the given {@linkplain N node} is not part of this {@link GraphPane}.
      */
-    public void onNodeSelection(Consumer<? super LocationNode<N>> nodeSelectionHandler) {
-        this.nodeSelectionHandler = nodeSelectionHandler;
-    }
-
-    /**
-     * Sets the action that is supposed to be executed when the user removes the selection of an {@linkplain LocationNode node}.<p>
-     * When a different {@linkplain LocationNode node} is selected than the previous one only the action set by
-     * {@link #onNodeSelection(Consumer)} will be executed.
-     * <p>
-     *
-     * @param nodeRemoveSelectionHandler The {@link Consumer} that executes the action.
-     *                                   The apply method of the {@link Consumer} will be called with
-     *                                   the previously selected {@linkplain Graph.Edge edge} as the parameter.
-     */
-    public void onNodeRemoveSelection(Consumer<? super LocationNode<N>> nodeRemoveSelectionHandler) {
-        this.nodeRemoveSelectionHandler = nodeRemoveSelectionHandler;
+    public void resetNodeColor(N node) {
+        setNodeColor(node, NODE_COLOR);
     }
 
     /**
@@ -350,9 +306,6 @@ public class GraphPane<N> extends Pane {
         for (Graph.Edge<LocationNode<N>> edge : new HashSet<>(edges.keySet())) {
             removeEdge(edge);
         }
-
-        selectedNode = null;
-        selectedEdge = null;
     }
 
     /**
@@ -403,8 +356,8 @@ public class GraphPane<N> extends Pane {
         AffineTransform reverse = new AffineTransform();
 
         reverse.setToTranslation(minX, minY);
-        reverse.scale(1.25 * (maxX - minX) / getWidth(),1.25 * (maxY - minY) / getHeight());
-        reverse.translate(-Math.abs(0.125 * reverse.getTranslateX()) / reverse.getScaleX(),-Math.abs(0.125 * reverse.getTranslateY()) / reverse.getScaleY());
+        reverse.scale(1.25 * (maxX - minX) / getWidth(), 1.25 * (maxY - minY) / getHeight());
+        reverse.translate(-Math.abs(0.125 * reverse.getTranslateX()) / reverse.getScaleX(), -Math.abs(0.125 * reverse.getTranslateY()) / reverse.getScaleY());
 
         transformation = reverse;
         transformation = getReverseTransform();
@@ -497,17 +450,13 @@ public class GraphPane<N> extends Pane {
 
         Line line = new Line(transformedA.getX(), transformedA.getY(), transformedB.getX(), transformedB.getY());
 
-        line.setStroke(edge.equals(selectedEdge) ? highlightColor : EDGE_COLOR);
-        line.setStrokeWidth(1);
+        line.setStrokeWidth(2);
 
         Point2D transformedMidPoint = transform(midPoint(edge));
         Text text = new Text(transformedMidPoint.getX(), transformedMidPoint.getY(), Integer.toString(edge.getWeight()));
         text.setStroke(TEXT_COLOR);
 
         getChildren().addAll(line, text);
-
-        line.setOnMouseClicked(e -> handleEdgeClick(line, edge));
-        text.setOnMouseClicked(e -> handleEdgeClick(line, edge));
 
         return new LabeledEdge(line, text);
     }
@@ -517,8 +466,7 @@ public class GraphPane<N> extends Pane {
 
         Ellipse ellipse = new Ellipse(transformedPoint.getX(), transformedPoint.getY(), NODE_DIAMETER, NODE_DIAMETER);
         ellipse.setFill(NODE_COLOR);
-        ellipse.setStrokeWidth(1);
-        ellipse.setStroke(node.equals(selectedNode) ? highlightColor : NODE_COLOR);
+        ellipse.setStrokeWidth(2);
         setMouseTransparent(false);
 
         Text text = new Text(transformedPoint.getX(), transformedPoint.getY(), node.value().toString());
@@ -526,53 +474,7 @@ public class GraphPane<N> extends Pane {
 
         getChildren().addAll(ellipse, text);
 
-        ellipse.setOnMouseClicked(e -> handleNodeClick(ellipse, node));
-        text.setOnMouseClicked(e -> handleNodeClick(ellipse, node));
-
         return new LabeledNode(ellipse, text);
-    }
-
-    @SuppressWarnings("DuplicatedCode")
-    private void handleNodeClick(Ellipse ellipse, LocationNode<N> node) {
-        if (selectedNode != null) {
-            nodes.get(selectedNode).ellipse().setStroke(NODE_COLOR);
-        }
-
-        if (node.equals(selectedNode)) {
-            if (nodeRemoveSelectionHandler != null) {
-                nodeRemoveSelectionHandler.accept(selectedNode);
-            }
-
-            selectedNode = null;
-        } else {
-            ellipse.setStroke(highlightColor);
-            selectedNode = node;
-
-            if (nodeSelectionHandler != null) {
-                nodeSelectionHandler.accept(selectedNode);
-            }
-
-        }
-    }
-
-    @SuppressWarnings("DuplicatedCode")
-    private void handleEdgeClick(Line line, Graph.Edge<LocationNode<N>> edge) {
-        if (selectedEdge != null) {
-            edges.get(selectedEdge).line().setStroke(EDGE_COLOR);
-        }
-
-        if (edge.equals(selectedEdge)) {
-            if (edgeRemoveSelectionHandler != null) {
-                edgeRemoveSelectionHandler.accept(selectedEdge);
-            }
-            selectedEdge = null;
-        } else {
-            line.setStroke(highlightColor);
-            selectedEdge = edge;
-            if (edgeSelectionHandler != null) {
-                edgeSelectionHandler.accept(selectedEdge);
-            }
-        }
     }
 
     private void drawGrid() {
@@ -680,13 +582,92 @@ public class GraphPane<N> extends Pane {
         return transformation.transform(locationToPoint2D(location), null);
     }
 
-    private record LabeledEdge(Line line, Text text) {
+    private static class LabeledEdge {
+        private final Line line;
+        private final Text text;
+
+        public LabeledEdge(Line line, Text text) {
+            this(line, text, EDGE_COLOR);
+        }
+
+        public LabeledEdge(Line line, Text text, Color strokeColor) {
+            this.line = line;
+            this.text = text;
+            setStrokeColor(strokeColor);
+        }
+
+        public Line line() {
+            return line;
+        }
+
+        public Text text() {
+            return text;
+        }
+
+        public void setStrokeColor(Color strokeColor) {
+            line.setStroke(strokeColor);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) return true;
+            if (obj == null || obj.getClass() != this.getClass()) return false;
+            var that = (LabeledEdge) obj;
+            return Objects.equals(this.line, that.line) &&
+                Objects.equals(this.text, that.text);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(line, text);
+        }
+
     }
 
-    private record LabeledNode(Ellipse ellipse, Text text) {
+    private static class LabeledNode {
+        private final Ellipse ellipse;
+        private final Text text;
+
+        private LabeledNode(Ellipse ellipse, Text text) {
+            this(ellipse, text, NODE_COLOR);
+        }
+
+        private LabeledNode(Ellipse ellipse, Text text, Color color) {
+            this.ellipse = ellipse;
+            this.text = text;
+            setStrokeColor(color);
+        }
+
+        public Ellipse ellipse() {
+            return ellipse;
+        }
+
+        public Text text() {
+            return text;
+        }
+
+        public void setStrokeColor(Color strokeColor) {
+            ellipse.setStroke(strokeColor);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) return true;
+            if (obj == null || obj.getClass() != this.getClass()) return false;
+            var that = (LabeledNode) obj;
+            return Objects.equals(this.ellipse, that.ellipse) &&
+                Objects.equals(this.text, that.text);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(ellipse, text);
+        }
+
     }
 
-    private record ComparingCollector<T extends Comparable<T>>(Comparator<T> comparator) implements Collector<T, List<T>, T> {
+    private record ComparingCollector<T extends Comparable<T>>(
+        Comparator<T> comparator) implements Collector<T, List<T>, T> {
 
         @Override
         public Supplier<List<T>> supplier() {

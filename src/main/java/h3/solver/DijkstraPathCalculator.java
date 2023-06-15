@@ -12,9 +12,10 @@ import java.util.*;
  */
 public class DijkstraPathCalculator<N> implements PathCalculator<N> {
 
-    private final Graph<N> graph;
-    private final Map<N, Integer> distance = new HashMap<>();
-    private final Map<N, N> predecessors = new HashMap<>();
+    protected final Graph<N> graph;
+    protected final Map<N, Integer> distance = new HashMap<>();
+    protected final Map<N, N> predecessors = new HashMap<>();
+    protected final Set<N> remainingNodes = new HashSet<>();
 
     public DijkstraPathCalculator(Graph<N> graph) {
         this.graph = graph;
@@ -42,7 +43,6 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
         }
 
         init(graph, start);
-        Set<N> remainingNodes = new HashSet<>(graph.getNodes());
 
         while (!remainingNodes.isEmpty()) {
             N node = extractMin(remainingNodes);
@@ -67,10 +67,11 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
      * @param graph the graph which nodes to use
      * @param start the start node
      */
-    private void init(Graph<N> graph, N start) {
+    protected void init(Graph<N> graph, N start) {
         // reset
         distance.clear();
         predecessors.clear();
+        remainingNodes.clear();
 
         // repopulate with default values
         for (N node : graph.getNodes()) {
@@ -78,6 +79,7 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
             predecessors.put(node, null);
         }
         distance.put(start, 0);
+        remainingNodes.addAll(graph.getNodes());
     }
 
     /**
@@ -86,7 +88,7 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
      * @param remainingNodes the set of remaining nodes
      * @return the next unprocessed node with minimal weight
      */
-    private N extractMin(Set<N> remainingNodes) {
+    protected N extractMin(Set<N> remainingNodes) {
         return distance.entrySet()
             .stream()
             .filter(entry -> remainingNodes.contains(entry.getKey()))
@@ -103,7 +105,7 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
      * @param dest the target node for this update
      * @param edge the edge between {@code via} and {@code dest}.
      */
-    private void relax(N via, N dest, Edge<N> edge) {
+    protected void relax(N via, N dest, Edge<N> edge) {
         int newDistance = distance.get(via) + edge.getWeight();
         if (newDistance < distance.get(dest)) {
             distance.put(dest, newDistance);
@@ -118,7 +120,7 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
      * @param target the target node
      * @return a list of nodes in the order they need to be traversed to get the shortest path between the two nodes
      */
-    private List<N> reconstructPath(N start, N target) {
+    protected List<N> reconstructPath(N start, N target) {
         LinkedList<N> shortestPath = new LinkedList<>();
         N current = target;
         while (current != start) {
