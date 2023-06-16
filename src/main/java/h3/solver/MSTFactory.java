@@ -2,7 +2,7 @@ package h3.solver;
 
 import h3.graph.Graph;
 
-public interface MSTFactory {
+public interface MSTFactory<N> {
 
-    <T> Graph<T> createMST(Graph<T> graph);
+    Graph<N> createMST(Graph<N> graph);
 }
