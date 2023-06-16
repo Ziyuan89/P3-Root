@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 /**
  * A factory for creating a Minimum Spanning Tree using Kruskal's algorithm.
  */
-public class KruskalMSTFactory implements MSTFactory {
+public class KruskalMSTFactory<N> implements MSTFactory<N> {
     @Override
-    public <N> Graph<N> createMST(Graph<N> graph) {
+    public Graph<N> createMST(Graph<N> graph) {
         final Set<Graph.Edge<N>> mstEdges = new HashSet<>();
         // TODO: List<BinaryTree<T>> mstGroups
         final List<Set<N>> mstGroups = initGroups(graph);
@@ -35,11 +35,10 @@ public class KruskalMSTFactory implements MSTFactory {
      *
      * @param mstGroups The list of all MST Groups.
      * @param edge      The edge to process.
-     * @param <N>       The type of the nodes in the graph.
      * @return {@code true} if the edge was accepted and the two MST's were merged,
      * {@code false} if it was skipped.
      */
-    protected <N> boolean acceptEdge(List<Set<N>> mstGroups, Graph.Edge<N> edge) {
+    protected boolean acceptEdge(List<Set<N>> mstGroups, Graph.Edge<N> edge) {
         int aIndex = -1;
         int bIndex = -1;
 
@@ -72,10 +71,9 @@ public class KruskalMSTFactory implements MSTFactory {
      * <p> Each MST Group contains exactly one node of the graph and for every node is in exactly one group.
      *
      * @param graph The graph to create the MST Groups for.
-     * @param <N>   The type of the nodes in the graph.
      * @return The initialized list of all MST Groups.
      */
-    protected <N> List<Set<N>> initGroups(Graph<N> graph) {
+    protected List<Set<N>> initGroups(Graph<N> graph) {
         return graph.getNodes()
             .stream().map(n -> new HashSet<>(List.of(n)))
             .collect(Collectors.toCollection(ArrayList::new));
@@ -89,9 +87,8 @@ public class KruskalMSTFactory implements MSTFactory {
      * @param mstGroups The list of all MST Groups.
      * @param aIndex    The index of the first set to join.
      * @param bIndex    The index of the second set to join.
-     * @param <N>       The type of the nodes in the graph.
      */
-    protected <N> void joinSets(List<Set<N>> mstGroups, int aIndex, int bIndex) {
+    protected void joinSets(List<Set<N>> mstGroups, int aIndex, int bIndex) {
         if (mstGroups.get(aIndex).size() < mstGroups.get(bIndex).size()) {
             mstGroups.get(aIndex).addAll(mstGroups.get(bIndex));
             mstGroups.remove(bIndex);
