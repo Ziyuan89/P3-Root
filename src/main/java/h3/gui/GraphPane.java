@@ -18,19 +18,10 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.*;
 import java.util.stream.Collector;
 
+import static h3.gui.GraphStyle.*;
+
 @SuppressWarnings("unused")
 public class GraphPane<N> extends Pane {
-
-    public static final float FIVE_TICKS_WIDTH = .125f;
-    public static final float TEN_TICKS_WIDTH = .25f;
-
-    private static final Color EDGE_COLOR = Color.LIGHTGRAY;
-    private static final Color NODE_COLOR = Color.DARKGRAY;
-    private static final Color TEXT_COLOR = Color.GRAY;
-    private static final Color GRID_LINE_COLOR = Color.LIGHTGRAY;
-    private static Color highlightColor = Color.RED;
-
-    private static final double NODE_DIAMETER = 15;
 
     private static final double SCALE_IN = 1.1;
     private static final double SCALE_OUT = 1 / SCALE_IN;
@@ -151,13 +142,13 @@ public class GraphPane<N> extends Pane {
     }
 
     /**
-     * Resets the color used to draw the given {@linkplain Graph.Edge edge} to the default color ({@link #EDGE_COLOR}).
+     * Resets the color used to draw the given {@linkplain Graph.Edge edge} to the default color ({@link GraphStyle#DEFAULT_EDGE_COLOR}).
      *
      * @param edge The {@linkplain Graph.Edge edge} to update.
      * @throws IllegalArgumentException If the given {@linkplain Graph.Edge edge} is not part of this {@link GraphPane}.
      */
     public synchronized void resetEdgeColor(Graph.Edge<N> edge) {
-        setEdgeColor(edge, EDGE_COLOR);
+        setEdgeColor(edge, DEFAULT_EDGE_COLOR);
     }
 
     /**
@@ -253,13 +244,13 @@ public class GraphPane<N> extends Pane {
     }
 
     /**
-     * Resets the color used to draw the given {@linkplain N node} to the default color ({@link #NODE_COLOR}).
+     * Resets the color used to draw the given {@linkplain N node} to the default color ({@link GraphStyle#DEFAULT_NODE_COLOR}).
      *
      * @param node The {@linkplain N node} to update.
      * @throws IllegalArgumentException If the given {@linkplain N node} is not part of this {@link GraphPane}.
      */
     public void resetNodeColor(N node) {
-        setNodeColor(node, NODE_COLOR);
+        setNodeColor(node, DEFAULT_NODE_COLOR);
     }
 
     /**
@@ -368,10 +359,6 @@ public class GraphPane<N> extends Pane {
         alreadyCentered = true;
     }
 
-    public static void setHighlightColor(Color highlightColor) {
-        GraphPane.highlightColor = highlightColor;
-    }
-
     // --- Private Methods --- //
 
     private void initListeners() {
@@ -450,7 +437,7 @@ public class GraphPane<N> extends Pane {
 
         Line line = new Line(transformedA.getX(), transformedA.getY(), transformedB.getX(), transformedB.getY());
 
-        line.setStrokeWidth(2);
+        line.setStrokeWidth(EDGE_STROKE_WIDTH);
 
         Point2D transformedMidPoint = transform(midPoint(edge));
         Text text = new Text(transformedMidPoint.getX(), transformedMidPoint.getY(), Integer.toString(edge.getWeight()));
@@ -465,8 +452,8 @@ public class GraphPane<N> extends Pane {
         Point2D transformedPoint = transform(node.location());
 
         Ellipse ellipse = new Ellipse(transformedPoint.getX(), transformedPoint.getY(), NODE_DIAMETER, NODE_DIAMETER);
-        ellipse.setFill(NODE_COLOR);
-        ellipse.setStrokeWidth(2);
+        ellipse.setFill(DEFAULT_NODE_COLOR);
+        ellipse.setStrokeWidth(NODE_STROKE_WIDTH);
         setMouseTransparent(false);
 
         Text text = new Text(transformedPoint.getX(), transformedPoint.getY(), node.value().toString());
@@ -513,9 +500,9 @@ public class GraphPane<N> extends Pane {
     private Float getStrokeWidth(int i, boolean inverted) {
         float strokeWidth;
         if (i % 10 == 0) {
-            strokeWidth = inverted ? TEN_TICKS_WIDTH : FIVE_TICKS_WIDTH;
+            strokeWidth = inverted ? GRID_TEN_TICKS_WIDTH : GRID_FIVE_TICKS_WIDTH;
         } else if (i % 5 == 0) {
-            strokeWidth = inverted ? FIVE_TICKS_WIDTH : TEN_TICKS_WIDTH;
+            strokeWidth = inverted ? GRID_FIVE_TICKS_WIDTH : GRID_TEN_TICKS_WIDTH;
         } else {
             return null;
         }
@@ -587,7 +574,7 @@ public class GraphPane<N> extends Pane {
         private final Text text;
 
         public LabeledEdge(Line line, Text text) {
-            this(line, text, EDGE_COLOR);
+            this(line, text, DEFAULT_EDGE_COLOR);
         }
 
         public LabeledEdge(Line line, Text text, Color strokeColor) {
@@ -629,7 +616,7 @@ public class GraphPane<N> extends Pane {
         private final Text text;
 
         private LabeledNode(Ellipse ellipse, Text text) {
-            this(ellipse, text, NODE_COLOR);
+            this(ellipse, text, DEFAULT_NODE_COLOR);
         }
 
         private LabeledNode(Ellipse ellipse, Text text, Color color) {

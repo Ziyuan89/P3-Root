@@ -6,11 +6,12 @@ import h3.gui.ControlPane;
 import h3.gui.GraphPane;
 import h3.gui.Location;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static h3.gui.GraphStyle.*;
 
 public class KruskalScene<N> extends AnimationScene {
 
@@ -55,13 +56,13 @@ public class KruskalScene<N> extends AnimationScene {
         if (visitedEdge != null) {
             for (Graph.Edge<N> edge : graph.getEdges()) {
                 if (edge.equals(visitedEdge)) {
-                    graphPane.setEdgeColor(edge, accepted ? Color.GREEN : Color.RED);
+                    graphPane.setEdgeColor(edge, accepted ? KRUSKAL_ACCEPTED_EDGE : KRUSKAL_REJECTED_EDGE);
                 } else if (acceptedEdges.contains(edge)) {
-                    graphPane.setEdgeColor(edge, Color.GREEN);
+                    graphPane.setEdgeColor(edge, KRUSKAL_ACCEPTED_EDGE);
                 } else if (rejectedEdges.contains(edge)) {
-                    graphPane.setEdgeColor(edge, Color.RED);
+                    graphPane.setEdgeColor(edge, KRUSKAL_REJECTED_EDGE);
                 } else {
-                    graphPane.resetEdgeColor(edge);
+                    graphPane.setEdgeColor(edge, KRUSKAL_UNVISITED_EDGE);
                 }
             }
 
@@ -79,7 +80,7 @@ public class KruskalScene<N> extends AnimationScene {
         graphPane = new GraphPane<>(graph, nodeLocations);
 
         for (Graph.Edge<N> edge : graph.getEdges()) {
-            graphPane.setEdgeColor(edge, Color.GREEN);
+            graphPane.setEdgeColor(edge, KRUSKAL_RESULT_EDGE);
         }
 
         root.setCenter(graphPane);

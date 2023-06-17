@@ -6,11 +6,12 @@ import h3.gui.ControlPane;
 import h3.gui.GraphPane;
 import h3.gui.Location;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static h3.gui.GraphStyle.*;
 
 public class DijkstraScene<N> extends AnimationScene {
 
@@ -54,21 +55,21 @@ public class DijkstraScene<N> extends AnimationScene {
 
             for (Graph.Edge<N> edge : graph.getEdges()) {
                 if (edge.equals(visitedEdge)) {
-                    graphPane.setEdgeColor(edge, Color.GREEN);
+                    graphPane.setEdgeColor(edge, DIJKSTRA_CURRENT_EDGE);
                 } else if (animation.getPredecessor(edge.getA()).equals(edge.getB()) || animation.getPredecessor(edge.getB()).equals(edge.getA())) {
-                    graphPane.setEdgeColor(edge, Color.RED);
+                    graphPane.setEdgeColor(edge, DIJKSTRA_PREDECESSOR_EDGE);
                 } else {
-                    graphPane.resetEdgeColor(edge);
+                    graphPane.setEdgeColor(edge, DIJKSTRA_UNVISITED_EDGE);
                 }
             }
 
             for (N node : graph.getNodes()) {
                 if (node.equals(viaNode)) {
-                    graphPane.setNodeColor(node, Color.GREEN);
+                    graphPane.setNodeColor(node, DIJKSTRA_CURRENT_NODE);
                 } else if (visitedNodes.contains(node)) {
-                    graphPane.setNodeColor(node, Color.RED);
+                    graphPane.setNodeColor(node, DIJKSTRA_VISITED_NODE);
                 } else {
-                    graphPane.resetNodeColor(node);
+                    graphPane.setNodeColor(node, DIJKSTRA_UNVISITED_NODE);
                 }
             }
         }
@@ -95,12 +96,12 @@ public class DijkstraScene<N> extends AnimationScene {
                     .filter(e -> e.getA().equals(nextNode) || e.getB().equals(nextNode))
                     .findFirst()
                     .orElseThrow(() -> new RuntimeException("No edge between " + node + " and " + nextNode + " found"));
-            graphPane.setEdgeColor(edge, Color.GREEN);
+            graphPane.setEdgeColor(edge, DIJKSTRA_RESULT_EDGE);
 
-            graphPane.setNodeColor(node, Color.GREEN);
+            graphPane.setNodeColor(node, DIJKSTRA_RESULT_NODE);
         }
 
-        graphPane.setNodeColor(path.get(path.size() - 1), Color.GREEN);
+        graphPane.setNodeColor(path.get(path.size() - 1), DIJKSTRA_RESULT_NODE);
 
         controlPane.disableNextStepButton();
     }
