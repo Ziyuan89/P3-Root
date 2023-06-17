@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
  * A factory for creating a Minimum Spanning Tree using Kruskal's algorithm.
  */
 public class KruskalMSTFactory<N> implements MSTFactory<N> {
+
     @Override
     public Graph<N> createMST(Graph<N> graph) {
         final Set<Graph.Edge<N>> mstEdges = new HashSet<>();
@@ -54,11 +55,12 @@ public class KruskalMSTFactory<N> implements MSTFactory<N> {
             if (aIndex != -1 && bIndex != -1) {
                 break;
             }
-            if (aIndex == bIndex) {
-                // edge's nodes are in the same MST
-                // skip this edge, or it will create a cycle
-                return false;
-            }
+        }
+
+        if (aIndex == bIndex) {
+            // edge's nodes are in the same MST
+            // skip this edge, or it will create a cycle
+            return false;
         }
 
         joinSets(mstGroups, aIndex, bIndex);
