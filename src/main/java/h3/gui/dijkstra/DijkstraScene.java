@@ -56,7 +56,7 @@ public class DijkstraScene<N> extends AnimationScene {
             for (Graph.Edge<N> edge : graph.getEdges()) {
                 if (edge.equals(visitedEdge)) {
                     graphPane.setEdgeColor(edge, DIJKSTRA_CURRENT_EDGE);
-                } else if (animation.getPredecessor(edge.getA()).equals(edge.getB()) || animation.getPredecessor(edge.getB()).equals(edge.getA())) {
+                } else if (animation.getPredecessorNode(edge.getA()).equals(edge.getB()) || animation.getPredecessorNode(edge.getB()).equals(edge.getA())) {
                     graphPane.setEdgeColor(edge, DIJKSTRA_PREDECESSOR_EDGE);
                 } else {
                     graphPane.setEdgeColor(edge, DIJKSTRA_UNVISITED_EDGE);
