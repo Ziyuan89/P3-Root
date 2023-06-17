@@ -7,15 +7,19 @@ import javafx.application.Platform;
 
 import java.util.*;
 
-public class AnimatedDijkstraPathCalculator<N> extends DijkstraPathCalculator<N> implements Animation<N> {
+public class AnimatedDijkstraPathCalculator<N> extends DijkstraPathCalculator<N> implements Animation {
 
-    public static final Object syncObject = new Object();
+    private static final Object syncObject = new Object();
 
     private final DijkstraScene<N> dijkstraScene;
+    private final N start;
+    private final N end;
 
-    public AnimatedDijkstraPathCalculator(Graph<N> graph, DijkstraScene<N> dijkstraScene) {
+    public AnimatedDijkstraPathCalculator(Graph<N> graph, DijkstraScene<N> dijkstraScene, N start, N end) {
         super(graph);
         this.dijkstraScene = dijkstraScene;
+        this.start = start;
+        this.end = end;
     }
 
     @Override
@@ -35,7 +39,7 @@ public class AnimatedDijkstraPathCalculator<N> extends DijkstraPathCalculator<N>
     }
 
     @Override
-    public void start(N start, N end) {
+    public void start() {
         List<N> path = super.calculatePath(start, end);
         dijkstraScene.showResult(path);
     }

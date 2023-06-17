@@ -1,4 +1,4 @@
-package h3.gui.dijkstra;
+package h3.gui.kruskal;
 
 import h3.graph.Graph;
 import javafx.beans.property.SimpleStringProperty;
@@ -10,14 +10,15 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.Pane;
 
 import java.util.List;
+import java.util.Set;
 
-public class DijkstraInfoPane<N> extends Pane {
+public class KruskalInfoPane<N> extends Pane {
 
     private ObservableList<N> nodes;
     private final Graph<N> graph;
-    private final AnimatedDijkstraPathCalculator<N> animation;
+    private final AnimatedKruskalMSTFactory<N> animation;
 
-    public DijkstraInfoPane(Graph<N> graph, AnimatedDijkstraPathCalculator<N> animation) {
+    public KruskalInfoPane(Graph<N> graph, AnimatedKruskalMSTFactory<N> animation) {
         this.graph = graph;
         this.animation = animation;
 
@@ -40,15 +41,23 @@ public class DijkstraInfoPane<N> extends Pane {
         TableColumn<N, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().toString()));
 
-        TableColumn<N, String> distanceColumn = new TableColumn<>("Distance");
-        distanceColumn.setCellValueFactory(data -> new SimpleStringProperty(animation.getDistance(data.getValue())));
+        TableColumn<N, String> distanceColumn = new TableColumn<>("Set");
+        distanceColumn.setCellValueFactory(data -> new SimpleStringProperty(getSet(data.getValue()).toString()));
 
-        TableColumn<N, String> predecessorColumn = new TableColumn<>("Predecessor");
-        predecessorColumn.setCellValueFactory(data -> new SimpleStringProperty(animation.getPredecessor(data.getValue())));
-
-        tableView.getColumns().addAll(List.of(nameColumn, distanceColumn, predecessorColumn));
+        tableView.getColumns().addAll(List.of(nameColumn, distanceColumn));
 
         getChildren().add(scrollPane);
+    }
+
+    private Set<N> getSet(N node) {
+
+        for (Set<N> set : animation.getMstGroups()) {
+            if (set.contains(node)) {
+                return set;
+            }
+        }
+
+        throw new IllegalStateException("Node not found in any set");
     }
 
 }

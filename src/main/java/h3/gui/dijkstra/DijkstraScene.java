@@ -1,10 +1,10 @@
 package h3.gui.dijkstra;
 
 import h3.graph.Graph;
+import h3.gui.AnimationScene;
 import h3.gui.ControlPane;
 import h3.gui.GraphPane;
 import h3.gui.Location;
-import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class DijkstraScene<N> extends Scene {
+public class DijkstraScene<N> extends AnimationScene {
 
     private final BorderPane root;
 
@@ -22,6 +22,7 @@ public class DijkstraScene<N> extends Scene {
     private AnimatedDijkstraPathCalculator<N> animation;
 
     private final List<N> visitedNodes = new ArrayList<>();
+    private ControlPane controlPane;
 
     public DijkstraScene() {
         super(new BorderPane());
@@ -36,17 +37,16 @@ public class DijkstraScene<N> extends Scene {
         root.setCenter(graphPane);
 
 
-        animation = new AnimatedDijkstraPathCalculator<>(graph, this);
+        animation = new AnimatedDijkstraPathCalculator<>(graph, this, start, end);
 
-        infoPane = new DijkstraInfoPane<>();
-        infoPane.init(graph, animation);
+        infoPane = new DijkstraInfoPane<>(graph, animation);
         root.setRight(infoPane);
 
-        ControlPane<N> controlPane = new ControlPane<>();
+        controlPane = new ControlPane();
         controlPane.init(animation);
         root.setBottom(controlPane);
 
-        new Thread(() -> animation.start(start, end)).start();
+        new Thread(() -> animation.start()).start();
     }
 
     public void refresh(Graph.Edge<N> visitedEdge, N viaNode) {
@@ -98,6 +98,8 @@ public class DijkstraScene<N> extends Scene {
         }
 
         graphPane.setNodeColor(path.get(path.size() - 1), Color.GREEN);
+
+        controlPane.disableNextStepButton();
     }
 
     public String getTitle() {

@@ -1,8 +1,8 @@
 package h3.gui;
 
-public interface Animation<N> {
+public interface Animation {
 
-    void start(N start, N end);
+    void start();
 
     Object getSyncObject();
 }

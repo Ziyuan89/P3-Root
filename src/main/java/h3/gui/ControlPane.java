@@ -4,7 +4,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 
-public class ControlPane<N> extends Pane {
+public class ControlPane extends Pane {
 
     private final Button nextStepButton = new Button("Next Step");
 
@@ -12,7 +12,7 @@ public class ControlPane<N> extends Pane {
         setPadding(new Insets(5));
     }
 
-    public void init(Animation<N> animation) {
+    public void init(Animation animation) {
         getChildren().add(nextStepButton);
 
         nextStepButton.setOnAction(event -> {
@@ -21,6 +21,10 @@ public class ControlPane<N> extends Pane {
                 animation.getSyncObject().notify();
             }
         });
+    }
+
+    public void disableNextStepButton() {
+        nextStepButton.setDisable(true);
     }
 
 }
