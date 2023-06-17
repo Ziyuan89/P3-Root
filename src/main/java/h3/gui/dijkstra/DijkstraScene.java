@@ -51,9 +51,12 @@ public class DijkstraScene<N> extends AnimationScene {
 
     public void refresh(Graph.Edge<N> visitedEdge, N viaNode) {
         if (visitedEdge != null) {
+
             for (Graph.Edge<N> edge : graph.getEdges()) {
                 if (edge.equals(visitedEdge)) {
                     graphPane.setEdgeColor(edge, Color.GREEN);
+                } else if (animation.getPredecessor(edge.getA()).equals(edge.getB()) || animation.getPredecessor(edge.getB()).equals(edge.getA())) {
+                    graphPane.setEdgeColor(edge, Color.RED);
                 } else {
                     graphPane.resetEdgeColor(edge);
                 }

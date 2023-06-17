@@ -57,6 +57,10 @@ public class AnimatedDijkstraPathCalculator<N> extends DijkstraPathCalculator<N>
         return Objects.toString(predecessors.get(node));
     }
 
+    public N getPredecessorNode(N node) {
+        return predecessors.get(node);
+    }
+
     private void waitUntilNextStep() {
         synchronized (syncObject) {
             try {
