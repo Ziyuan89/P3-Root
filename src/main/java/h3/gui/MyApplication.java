@@ -7,10 +7,6 @@ import javafx.stage.Stage;
 
 public class MyApplication extends Application {
 
-    public static void launch(String[] args) {
-        Application.launch(args);
-    }
-
     @Override
     public void start(Stage primaryStage) {
         GraphPane<Object> graphPane = new GraphPane<>();
