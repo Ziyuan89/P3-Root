@@ -1,5 +1,6 @@
 package h3.gui.dijkstra;
 
+import h3.graph.Edge;
 import h3.graph.Graph;
 import h3.gui.Animation;
 import h3.solver.DijkstraPathCalculator;
@@ -23,7 +24,7 @@ public class AnimatedDijkstraPathCalculator<N> extends DijkstraPathCalculator<N>
     }
 
     @Override
-    protected void relax(N via, N dest, Graph.Edge<N> edge) {
+    protected void relax(N via, N dest, Edge<N> edge) {
         super.relax(via, dest, edge);
 
         Platform.runLater(() -> dijkstraScene.refresh(edge, via));

@@ -1,7 +1,7 @@
 package h3.solver;
 
 import h3.graph.Graph;
-import h3.graph.Graph.Edge;
+import h3.graph.Edge;
 
 import java.util.*;
 

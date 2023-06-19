@@ -1,5 +1,6 @@
 package h3.gui.kruskal;
 
+import h3.graph.Edge;
 import h3.graph.Graph;
 import h3.gui.Animation;
 import h3.solver.KruskalMSTFactory;
@@ -24,7 +25,7 @@ public class AnimatedKruskalMSTFactory<N> extends KruskalMSTFactory<N> implement
     }
 
     @Override
-    protected boolean acceptEdge(List<Set<N>> mstGroups, Graph.Edge<N> edge) {
+    protected boolean acceptEdge(List<Set<N>> mstGroups, Edge<N> edge) {
         boolean accepted = super.acceptEdge(mstGroups, edge);
         this.mstGroups = mstGroups;
 

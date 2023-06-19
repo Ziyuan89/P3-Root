@@ -9,11 +9,11 @@ import java.util.stream.Collectors;
 
 public class BasicGraph<N> implements Graph<N> {
 
-    private final Map<N, Set<Graph.Edge<N>>> backing;
+    private final Map<N, Set<Edge<N>>> backing;
     private final Set<N> nodes;
-    private final Set<Graph.Edge<N>> edges;
+    private final Set<Edge<N>> edges;
 
-    public BasicGraph(Set<N> nodes, Set<Graph.Edge<N>> edges) {
+    public BasicGraph(Set<N> nodes, Set<Edge<N>> edges) {
         backing = nodes.stream()
             .map(n -> Map.entry(n, edges.stream()
                 .filter(e -> Objects.equals(e.a(), n) || Objects.equals(e.b(), n))
@@ -35,7 +35,7 @@ public class BasicGraph<N> implements Graph<N> {
 
     @Override
     public Set<Edge<N>> getAdjacentEdges(N node) {
-        Set<Graph.Edge<N>> result = backing.get(node);
+        Set<Edge<N>> result = backing.get(node);
         if (result == null) {
             throw new IllegalArgumentException("Node not found: " + node);
         }

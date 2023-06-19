@@ -1,5 +1,6 @@
 package h3.gui;
 
+import h3.graph.Edge;
 import h3.graph.Graph;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
@@ -34,7 +35,7 @@ public class GraphPane<N> extends Pane {
 
     private final Map<LocationNode<N>, LabeledNode> nodes = new HashMap<>();
     private final Map<N, LocationNode<N>> nodeLocations = new HashMap<>();
-    private final Map<Graph.Edge<LocationNode<N>>, LabeledEdge> edges = new HashMap<>();
+    private final Map<Edge<LocationNode<N>>, LabeledEdge> edges = new HashMap<>();
 
     private final List<Node> grid = new ArrayList<>();
 
@@ -49,7 +50,7 @@ public class GraphPane<N> extends Pane {
 
     public GraphPane(Graph<N> graph, Map<N, Location> nodeLocations) {
         this(graph.getNodes().stream().map(node -> new LocationNode<>(node, nodeLocations.get(node))).toList(),
-            graph.getEdges().stream().map(edge -> Graph.Edge.of(
+            graph.getEdges().stream().map(edge -> Edge.of(
                 new LocationNode<>(edge.a(), nodeLocations.get(edge.a())),
                 new LocationNode<>(edge.b(), nodeLocations.get(edge.b())),
                 edge.weight())
@@ -60,15 +61,15 @@ public class GraphPane<N> extends Pane {
      * Creates a new {@link GraphPane}, displays the given components and centers itself.
      *
      * @param nodes The {@linkplain LocationNode nodes} to display.
-     * @param edges The {@linkplain Graph.Edge edges} to display.
+     * @param edges The {@linkplain Edge edges} to display.
      */
     private GraphPane(Collection<? extends LocationNode<N>> nodes,
-                     Collection<? extends Graph.Edge<LocationNode<N>>> edges) {
+                     Collection<? extends Edge<LocationNode<N>>> edges) {
 
         // avoid division by zero when scale = 1
         transformation.scale(MIN_SCALE, MIN_SCALE);
 
-        for (Graph.Edge<LocationNode<N>> edge : edges) {
+        for (Edge<LocationNode<N>> edge : edges) {
             addEdge(edge);
         }
 
@@ -86,33 +87,33 @@ public class GraphPane<N> extends Pane {
     // --- Edge Handling --- //
 
     /**
-     * Adds an {@linkplain Graph.Edge edge} to this {@link GraphPane} and displays it.
+     * Adds an {@linkplain Edge edge} to this {@link GraphPane} and displays it.
      *
-     * @param edge The {@linkplain Graph.Edge edge} to display.
+     * @param edge The {@linkplain Edge edge} to display.
      */
-    public void addEdge(Graph.Edge<LocationNode<N>> edge) {
+    public void addEdge(Edge<LocationNode<N>> edge) {
         edges.put(edge, drawEdge(edge));
     }
 
     /**
-     * Adds the {@linkplain Graph.Edge edges} to this {@link GraphPane} and displays them.
+     * Adds the {@linkplain Edge edges} to this {@link GraphPane} and displays them.
      *
-     * @param edges The {@linkplain Graph.Edge edges} to display.
+     * @param edges The {@linkplain Edge edges} to display.
      */
-    public void addAllEdges(Collection<? extends Graph.Edge<LocationNode<N>>> edges) {
-        for (Graph.Edge<LocationNode<N>> edge : edges) {
+    public void addAllEdges(Collection<? extends Edge<LocationNode<N>>> edges) {
+        for (Edge<LocationNode<N>> edge : edges) {
             addEdge(edge);
         }
     }
 
     /**
-     * Removes the given {@linkplain Graph.Edge edge} from this {@link GraphPane}.
-     * The {@linkplain Graph.Edge edge} will not be displayed after anymore calling this method.
-     * If the given {@linkplain Graph.Edge edge} is not part of this {@linkplain GraphPane} the method does nothing.
+     * Removes the given {@linkplain Edge edge} from this {@link GraphPane}.
+     * The {@linkplain Edge edge} will not be displayed after anymore calling this method.
+     * If the given {@linkplain Edge edge} is not part of this {@linkplain GraphPane} the method does nothing.
      *
-     * @param edge The {@linkplain Graph.Edge edge} to remove.
+     * @param edge The {@linkplain Edge edge} to remove.
      */
-    public void removeEdge(Graph.Edge<LocationNode<N>> edge) {
+    public void removeEdge(Edge<LocationNode<N>> edge) {
         LabeledEdge labeledEdge = edges.remove(edge);
 
         if (labeledEdge != null) {
@@ -121,14 +122,14 @@ public class GraphPane<N> extends Pane {
     }
 
     /**
-     * Updates the color used to draw the given {@linkplain Graph.Edge edge}.
+     * Updates the color used to draw the given {@linkplain Edge edge}.
      *
-     * @param edge  The {@linkplain Graph.Edge edge} to update.
+     * @param edge  The {@linkplain Edge edge} to update.
      * @param color The new color.
-     * @throws IllegalArgumentException If the given {@linkplain Graph.Edge edge} is not part of this {@link GraphPane}.
+     * @throws IllegalArgumentException If the given {@linkplain Edge edge} is not part of this {@link GraphPane}.
      */
-    public void setEdgeColor(Graph.Edge<N> edge, Color color) {
-        LabeledEdge labeledEdge = edges.get(Graph.Edge.of(
+    public void setEdgeColor(Edge<N> edge, Color color) {
+        LabeledEdge labeledEdge = edges.get(Edge.of(
             new LocationNode<>(edge.a(), nodeLocations.get(edge.a()).location()),
             new LocationNode<>(edge.b(), nodeLocations.get(edge.b()).location()),
             edge.weight()));
@@ -141,31 +142,31 @@ public class GraphPane<N> extends Pane {
     }
 
     /**
-     * Resets the color used to draw the given {@linkplain Graph.Edge edge} to the default color ({@link GraphStyle#DEFAULT_EDGE_COLOR}).
+     * Resets the color used to draw the given {@linkplain Edge edge} to the default color ({@link GraphStyle#DEFAULT_EDGE_COLOR}).
      *
-     * @param edge The {@linkplain Graph.Edge edge} to update.
-     * @throws IllegalArgumentException If the given {@linkplain Graph.Edge edge} is not part of this {@link GraphPane}.
+     * @param edge The {@linkplain Edge edge} to update.
+     * @throws IllegalArgumentException If the given {@linkplain Edge edge} is not part of this {@link GraphPane}.
      */
-    public void resetEdgeColor(Graph.Edge<N> edge) {
+    public void resetEdgeColor(Edge<N> edge) {
         setEdgeColor(edge, DEFAULT_EDGE_COLOR);
     }
 
     /**
-     * Updates the position of all {@linkplain Graph.Edge edges} on this {@link GraphPane}.
+     * Updates the position of all {@linkplain Edge edges} on this {@link GraphPane}.
      */
     public void redrawEdges() {
-        for (Graph.Edge<LocationNode<N>> edge : edges.keySet()) {
+        for (Edge<LocationNode<N>> edge : edges.keySet()) {
             redrawEdge(edge);
         }
     }
 
     /**
-     * Updates the position of the given {@linkplain Graph.Edge edge}.
+     * Updates the position of the given {@linkplain Edge edge}.
      *
-     * @param edge The {@linkplain Graph.Edge edge} to update.
-     * @throws IllegalArgumentException If the given {@linkplain Graph.Edge edge} is not part of this {@link GraphPane}.
+     * @param edge The {@linkplain Edge edge} to update.
+     * @throws IllegalArgumentException If the given {@linkplain Edge edge} is not part of this {@link GraphPane}.
      */
-    public void redrawEdge(Graph.Edge<LocationNode<N>> edge) {
+    public void redrawEdge(Edge<LocationNode<N>> edge) {
         if (!edges.containsKey(edge)) {
             throw new IllegalArgumentException("The given edge is not part of this GraphPane");
         }
@@ -211,7 +212,7 @@ public class GraphPane<N> extends Pane {
 
     /**
      * Removes the given {@linkplain LocationNode node} from this {@link GraphPane}.<p>
-     * {@linkplain Graph.Edge edge}s connected to the removed {@linkplain LocationNode node} will not get removed.
+     * {@linkplain Edge edge}s connected to the removed {@linkplain LocationNode node} will not get removed.
      * The {@linkplain LocationNode node} will not be displayed after anymore calling this method.
      * If the given {@linkplain LocationNode node} is not part of this {@linkplain GraphPane} the method does nothing.
      *
@@ -293,7 +294,7 @@ public class GraphPane<N> extends Pane {
             removeNode(node);
         }
 
-        for (Graph.Edge<LocationNode<N>> edge : new HashSet<>(edges.keySet())) {
+        for (Edge<LocationNode<N>> edge : new HashSet<>(edges.keySet())) {
             removeEdge(edge);
         }
     }
@@ -427,7 +428,7 @@ public class GraphPane<N> extends Pane {
         });
     }
 
-    private LabeledEdge drawEdge(Graph.Edge<LocationNode<N>> edge) {
+    private LabeledEdge drawEdge(Edge<LocationNode<N>> edge) {
         Location a = edge.a().location();
         Location b = edge.b().location();
 
@@ -524,7 +525,7 @@ public class GraphPane<N> extends Pane {
         return midPoint(node.location());
     }
 
-    private Point2D midPoint(Graph.Edge<LocationNode<N>> edge) {
+    private Point2D midPoint(Edge<LocationNode<N>> edge) {
         var l1 = edge.a().location();
         var l2 = edge.b().location();
         return new Point2D.Double((l1.x() + l2.x()) / 2d, (l1.y() + l2.y()) / 2d);

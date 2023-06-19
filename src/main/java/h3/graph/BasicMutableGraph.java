@@ -9,7 +9,7 @@ public class BasicMutableGraph<N> implements MutableGraph<N> {
 
     private final Map<N, Set<Edge<N>>> backing;
     private final Set<N> nodes;
-    private final Set<Graph.Edge<N>> edges;
+    private final Set<Edge<N>> edges;
 
     public BasicMutableGraph() {
         backing = new HashMap<>();
@@ -17,7 +17,7 @@ public class BasicMutableGraph<N> implements MutableGraph<N> {
         edges = new HashSet<>();
     }
 
-    public BasicMutableGraph(Set<N> nodes, Set<Graph.Edge<N>> edges) {
+    public BasicMutableGraph(Set<N> nodes, Set<Edge<N>> edges) {
         backing = nodes.stream()
             .map(n -> Map.entry(n, edges.stream()
                 .filter(e -> Objects.equals(e.a(), n) || Objects.equals(e.b(), n))
@@ -39,7 +39,7 @@ public class BasicMutableGraph<N> implements MutableGraph<N> {
 
     @Override
     public Set<Edge<N>> getAdjacentEdges(N node) {
-        Set<Graph.Edge<N>> result = backing.get(node);
+        Set<Edge<N>> result = backing.get(node);
         if (result == null) {
             throw new IllegalArgumentException("Node not found: " + node);
         }

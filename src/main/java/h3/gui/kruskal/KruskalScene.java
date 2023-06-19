@@ -1,5 +1,6 @@
 package h3.gui.kruskal;
 
+import h3.graph.Edge;
 import h3.graph.Graph;
 import h3.gui.AnimationScene;
 import h3.gui.ControlPane;
@@ -24,8 +25,8 @@ public class KruskalScene<N> extends AnimationScene {
     private ControlPane controlPane;
     private AnimatedKruskalMSTFactory<N> animation;
 
-    private final List<Graph.Edge<N>> acceptedEdges = new ArrayList<>();
-    private final List<Graph.Edge<N>> rejectedEdges = new ArrayList<>();
+    private final List<Edge<N>> acceptedEdges = new ArrayList<>();
+    private final List<Edge<N>> rejectedEdges = new ArrayList<>();
 
     public KruskalScene() {
         super(new BorderPane());
@@ -52,9 +53,9 @@ public class KruskalScene<N> extends AnimationScene {
         new Thread(() -> animation.start()).start();
     }
 
-    public void refresh(Graph.Edge<N> visitedEdge, boolean accepted) {
+    public void refresh(Edge<N> visitedEdge, boolean accepted) {
         if (visitedEdge != null) {
-            for (Graph.Edge<N> edge : graph.getEdges()) {
+            for (Edge<N> edge : graph.getEdges()) {
                 if (edge.equals(visitedEdge)) {
                     graphPane.setEdgeColor(edge, accepted ? KRUSKAL_ACCEPTED_EDGE : KRUSKAL_REJECTED_EDGE);
                 } else if (acceptedEdges.contains(edge)) {
@@ -79,7 +80,7 @@ public class KruskalScene<N> extends AnimationScene {
     public void showResult(Graph<N> graph) {
         graphPane = new GraphPane<>(graph, nodeLocations);
 
-        for (Graph.Edge<N> edge : graph.getEdges()) {
+        for (Edge<N> edge : graph.getEdges()) {
             graphPane.setEdgeColor(edge, KRUSKAL_RESULT_EDGE);
         }
 

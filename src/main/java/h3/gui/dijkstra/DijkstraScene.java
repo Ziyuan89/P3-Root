@@ -1,5 +1,6 @@
 package h3.gui.dijkstra;
 
+import h3.graph.Edge;
 import h3.graph.Graph;
 import h3.gui.AnimationScene;
 import h3.gui.ControlPane;
@@ -50,10 +51,10 @@ public class DijkstraScene<N> extends AnimationScene {
         new Thread(() -> animation.start()).start();
     }
 
-    public void refresh(Graph.Edge<N> visitedEdge, N viaNode) {
+    public void refresh(Edge<N> visitedEdge, N viaNode) {
         if (visitedEdge != null) {
 
-            for (Graph.Edge<N> edge : graph.getEdges()) {
+            for (Edge<N> edge : graph.getEdges()) {
                 if (edge.equals(visitedEdge)) {
                     graphPane.setEdgeColor(edge, DIJKSTRA_CURRENT_EDGE);
                 } else if (animation.getPredecessorNode(edge.a()).equals(edge.b()) || animation.getPredecessorNode(edge.b()).equals(edge.a())) {
@@ -80,7 +81,7 @@ public class DijkstraScene<N> extends AnimationScene {
     }
 
     public void showResult(List<N> path) {
-        for (Graph.Edge<N> edge : graph.getEdges()) {
+        for (Edge<N> edge : graph.getEdges()) {
             graphPane.resetEdgeColor(edge);
         }
 
@@ -92,7 +93,7 @@ public class DijkstraScene<N> extends AnimationScene {
             N node = path.get(i);
             N nextNode = path.get(i + 1);
 
-            Graph.Edge<N> edge = graph.getAdjacentEdges(node).stream()
+            Edge<N> edge = graph.getAdjacentEdges(node).stream()
                     .filter(e -> e.a().equals(nextNode) || e.b().equals(nextNode))
                     .findFirst()
                     .orElseThrow(() -> new RuntimeException("No edge between " + node + " and " + nextNode + " found"));

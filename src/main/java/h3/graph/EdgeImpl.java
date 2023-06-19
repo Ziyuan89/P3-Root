@@ -2,7 +2,7 @@ package h3.graph;
 
 import java.util.Objects;
 
-record EdgeImpl<N>(N a, N b, int weight) implements Graph.Edge<N> {
+record EdgeImpl<N>(N a, N b, int weight) implements Edge<N> {
 
     @Override
     public boolean equals(Object o) {

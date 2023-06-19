@@ -1,6 +1,7 @@
 package h3.solver;
 
 import h3.graph.BasicGraph;
+import h3.graph.Edge;
 import h3.graph.Graph;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class KruskalMSTFactory<N> implements MSTFactory<N> {
 
     @Override
     public Graph<N> createMST(Graph<N> graph) {
-        final Set<Graph.Edge<N>> mstEdges = new HashSet<>();
+        final Set<Edge<N>> mstEdges = new HashSet<>();
         // TODO: List<BinaryTree<T>> mstGroups
         final List<Set<N>> mstGroups = initGroups(graph);
 
@@ -39,7 +40,7 @@ public class KruskalMSTFactory<N> implements MSTFactory<N> {
      * @return {@code true} if the edge was accepted and the two MST's were merged,
      * {@code false} if it was skipped.
      */
-    protected boolean acceptEdge(List<Set<N>> mstGroups, Graph.Edge<N> edge) {
+    protected boolean acceptEdge(List<Set<N>> mstGroups, Edge<N> edge) {
         int aIndex = -1;
         int bIndex = -1;
 

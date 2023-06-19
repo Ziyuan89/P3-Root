@@ -1,6 +1,7 @@
 package h3.graph;
 
-import java.util.Collections;
+import h3.SetUtils;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,8 +20,8 @@ public class AdjacencyGraph<N> implements Graph<N> {
 
     public AdjacencyGraph(Set<N> nodes, Set<Edge<N>> edges) {
         matrix = new AdjacencyMatrix(nodes.size());
-        this.nodes = Collections.unmodifiableSet(nodes);
-        this.edges = Collections.unmodifiableSet(edges);
+        this.nodes = SetUtils.immutableCopyOf(nodes);
+        this.edges = SetUtils.immutableCopyOf(edges);
         int index = 0;
         for (N node : nodes) {
             nodeIndices.put(node, index);
