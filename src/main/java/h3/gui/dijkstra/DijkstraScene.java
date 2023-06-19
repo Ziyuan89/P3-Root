@@ -58,11 +58,14 @@ public class DijkstraScene<N> extends AnimationScene {
             for (Edge<N> edge : graph.getEdges()) {
                 if (edge.equals(visitedEdge)) {
                     graphPane.setEdgeColor(edge, DIJKSTRA_CURRENT_EDGE);
+                    graphPane.setEdgeDash(edge, DIJKSTRA_CURRENT_EDGE_DASHED, DIJKSTRA_CURRENT_EDGE_DASH_LENGTH, DIJKSTRA_CURRENT_EDGE_GAP_LENGTH);
                 } else if (Objects.equals(animation.getPredecessorNode(edge.a()), edge.b()) ||
                 Objects.equals(animation.getPredecessorNode(edge.b()), edge.a())) {
                     graphPane.setEdgeColor(edge, DIJKSTRA_PREDECESSOR_EDGE);
+                    graphPane.setEdgeDash(edge, DIJKSTRA_PREDECESSOR_EDGE_DASHED, DIJKSTRA_PREDECESSOR_EDGE_DASH_LENGTH, DIJKSTRA_PREDECESSOR_EDGE_GAP_LENGTH);
                 } else {
                     graphPane.setEdgeColor(edge, DIJKSTRA_UNVISITED_EDGE);
+                    graphPane.setEdgeDash(edge, DIJKSTRA_UNVISITED_EDGE_DASHED, DIJKSTRA_UNVISITED_EDGE_DASH_LENGTH, DIJKSTRA_UNVISITED_EDGE_GAP_LENGTH);
                 }
             }
 
@@ -74,6 +77,11 @@ public class DijkstraScene<N> extends AnimationScene {
                 } else {
                     graphPane.setNodeColor(node, DIJKSTRA_UNVISITED_NODE);
                 }
+            }
+        } else {
+            for (Edge<N> edge : graph.getEdges()) {
+                graphPane.setEdgeColor(edge, DIJKSTRA_UNVISITED_EDGE);
+                graphPane.setEdgeDash(edge, DIJKSTRA_UNVISITED_EDGE_DASHED, DIJKSTRA_UNVISITED_EDGE_DASH_LENGTH, DIJKSTRA_UNVISITED_EDGE_GAP_LENGTH);
             }
         }
 
@@ -99,7 +107,9 @@ public class DijkstraScene<N> extends AnimationScene {
                     .filter(e -> e.a().equals(nextNode) || e.b().equals(nextNode))
                     .findFirst()
                     .orElseThrow(() -> new RuntimeException("No edge between " + node + " and " + nextNode + " found"));
+
             graphPane.setEdgeColor(edge, DIJKSTRA_RESULT_EDGE);
+            graphPane.setEdgeDash(edge, DIJKSTRA_RESULT_EDGE_DASHED, DIJKSTRA_RESULT_EDGE_DASH_LENGTH, DIJKSTRA_RESULT_EDGE_GAP_LENGTH);
 
             graphPane.setNodeColor(node, DIJKSTRA_RESULT_NODE);
         }

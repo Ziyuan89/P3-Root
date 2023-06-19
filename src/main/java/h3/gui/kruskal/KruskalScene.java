@@ -58,12 +58,18 @@ public class KruskalScene<N> extends AnimationScene {
             for (Edge<N> edge : graph.getEdges()) {
                 if (edge.equals(visitedEdge)) {
                     graphPane.setEdgeColor(edge, accepted ? KRUSKAL_ACCEPTED_EDGE : KRUSKAL_REJECTED_EDGE);
+                    graphPane.setEdgeDash(edge, accepted ? KRUSKAL_ACCEPTED_EDGE_DASHED : KRUSKAL_REJECTED_EDGE_DASHED,
+                            accepted ? KRUSKAL_ACCEPTED_EDGE_DASH_LENGTH : KRUSKAL_REJECTED_EDGE_DASH_LENGTH,
+                            accepted ? KRUSKAL_ACCEPTED_EDGE_GAP_LENGTH : KRUSKAL_REJECTED_EDGE_GAP_LENGTH);
                 } else if (acceptedEdges.contains(edge)) {
                     graphPane.setEdgeColor(edge, KRUSKAL_ACCEPTED_EDGE);
+                    graphPane.setEdgeDash(edge, KRUSKAL_ACCEPTED_EDGE_DASHED, KRUSKAL_ACCEPTED_EDGE_DASH_LENGTH, KRUSKAL_ACCEPTED_EDGE_GAP_LENGTH);
                 } else if (rejectedEdges.contains(edge)) {
                     graphPane.setEdgeColor(edge, KRUSKAL_REJECTED_EDGE);
+                    graphPane.setEdgeDash(edge, KRUSKAL_REJECTED_EDGE_DASHED, KRUSKAL_REJECTED_EDGE_DASH_LENGTH, KRUSKAL_REJECTED_EDGE_GAP_LENGTH);
                 } else {
                     graphPane.setEdgeColor(edge, KRUSKAL_UNVISITED_EDGE);
+                    graphPane.setEdgeDash(edge, KRUSKAL_UNVISITED_EDGE_DASHED, KRUSKAL_UNVISITED_EDGE_DASH_LENGTH, KRUSKAL_UNVISITED_EDGE_GAP_LENGTH);
                 }
             }
 
@@ -71,6 +77,11 @@ public class KruskalScene<N> extends AnimationScene {
                 acceptedEdges.add(visitedEdge);
             } else {
                 rejectedEdges.add(visitedEdge);
+            }
+        } else {
+            for (Edge<N> edge : graph.getEdges()) {
+                graphPane.setEdgeColor(edge, KRUSKAL_UNVISITED_EDGE);
+                graphPane.setEdgeDash(edge, KRUSKAL_UNVISITED_EDGE_DASHED, KRUSKAL_UNVISITED_EDGE_DASH_LENGTH, KRUSKAL_UNVISITED_EDGE_GAP_LENGTH);
             }
         }
 
@@ -82,6 +93,7 @@ public class KruskalScene<N> extends AnimationScene {
 
         for (Edge<N> edge : graph.getEdges()) {
             graphPane.setEdgeColor(edge, KRUSKAL_RESULT_EDGE);
+            graphPane.setEdgeDash(edge, KRUSKAL_RESULT_EDGE_DASHED, KRUSKAL_RESULT_EDGE_DASH_LENGTH, KRUSKAL_RESULT_EDGE_GAP_LENGTH);
         }
 
         root.setCenter(graphPane);

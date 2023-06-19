@@ -129,16 +129,24 @@ public class GraphPane<N> extends Pane {
      * @throws IllegalArgumentException If the given {@linkplain Edge edge} is not part of this {@link GraphPane}.
      */
     public void setEdgeColor(Edge<N> edge, Color color) {
-        LabeledEdge labeledEdge = edges.get(Edge.of(
-            new LocationNode<>(edge.a(), nodeLocations.get(edge.a()).location()),
-            new LocationNode<>(edge.b(), nodeLocations.get(edge.b()).location()),
-            edge.weight()));
+        getLabeledEdge(edge).setStrokeColor(color);
+    }
 
-        if (labeledEdge == null) {
-            throw new IllegalArgumentException("The given edge is not part of this GraphPane");
+    /**
+     * Updates the dashing settings of the stroke used to draw the given {@linkplain Edge edge}.
+     * @param edge The {@linkplain Edge edge} to update.
+     * @param dash Whether to use dashing or not.
+     * @param dashLength The length of the individual dashes.
+     * @param gapLength The length of the gaps between the dashes.
+     */
+    public void setEdgeDash(Edge<N> edge, boolean dash, double dashLength, double gapLength) {
+        LabeledEdge labeledEdge = getLabeledEdge(edge);
+
+        labeledEdge.line().getStrokeDashArray().clear();
+
+        if (dash) {
+            labeledEdge.line().getStrokeDashArray().addAll(dashLength, gapLength);
         }
-
-        labeledEdge.setStrokeColor(color);
     }
 
     /**
@@ -436,6 +444,7 @@ public class GraphPane<N> extends Pane {
         Point2D transformedB = transform(b);
 
         Line line = new Line(transformedA.getX(), transformedA.getY(), transformedB.getX(), transformedB.getY());
+        line.getStrokeDashArray().addAll(50.0, 10.0);
 
         line.setStrokeWidth(EDGE_STROKE_WIDTH);
 
@@ -507,6 +516,18 @@ public class GraphPane<N> extends Pane {
             return null;
         }
         return strokeWidth;
+    }
+
+    private LabeledEdge getLabeledEdge(Edge<N> edge) {
+        LabeledEdge labeledEdge = edges.get(Edge.of(
+            new LocationNode<>(edge.a(), nodeLocations.get(edge.a()).location()),
+            new LocationNode<>(edge.b(), nodeLocations.get(edge.b()).location()),
+            edge.weight()));
+
+        if (labeledEdge == null) {
+            throw new IllegalArgumentException("The given edge is not part of this GraphPane");
+        }
+        return labeledEdge;
     }
 
     private Point2D locationToPoint2D(Location location) {
