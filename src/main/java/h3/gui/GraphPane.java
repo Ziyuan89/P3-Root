@@ -64,7 +64,7 @@ public class GraphPane<N> extends Pane {
      * @param edges The {@linkplain Edge edges} to display.
      */
     private GraphPane(Collection<? extends LocationNode<N>> nodes,
-                     Collection<? extends Edge<LocationNode<N>>> edges) {
+                      Collection<? extends Edge<LocationNode<N>>> edges) {
 
         // avoid division by zero when scale = 1
         transformation.scale(MIN_SCALE, MIN_SCALE);
@@ -134,10 +134,12 @@ public class GraphPane<N> extends Pane {
 
     /**
      * Updates the dashing settings of the stroke used to draw the given {@linkplain Edge edge}.
-     * @param edge The {@linkplain Edge edge} to update.
-     * @param dash Whether to use dashing or not.
+     *
+     * @param edge       The {@linkplain Edge edge} to update.
+     * @param dash       Whether to use dashing or not.
      * @param dashLength The length of the individual dashes.
-     * @param gapLength The length of the gaps between the dashes.
+     * @param gapLength  The length of the gaps between the dashes.
+     * @throws IllegalArgumentException If the given {@linkplain Edge edge} is not part of this {@link GraphPane}.
      */
     public void setEdgeDash(Edge<N> edge, boolean dash, double dashLength, double gapLength) {
         LabeledEdge labeledEdge = getLabeledEdge(edge);
@@ -235,13 +237,13 @@ public class GraphPane<N> extends Pane {
     }
 
     /**
-     * Updates the color used to draw the given {@linkplain N node}.
+     * Updates the color used to draw the circumference of given {@linkplain N node}.
      *
      * @param node  The {@linkplain N node} to update.
      * @param color The new color.
      * @throws IllegalArgumentException If the given {@linkplain N node} is not part of this {@link GraphPane}.
      */
-    public void setNodeColor(N node, Color color) {
+    public void setNodeStrokeColor(N node, Color color) {
         LabeledNode labeledNode = nodes.get(new LocationNode<>(node, nodeLocations.get(node).location()));
 
         if (labeledNode == null) {
@@ -252,13 +254,29 @@ public class GraphPane<N> extends Pane {
     }
 
     /**
+     * Updates the color used to fill the given {@linkplain N node}.
+     * @param node The {@linkplain N node} to update.
+     * @param color The new color.
+     * @throws IllegalArgumentException If the given {@linkplain N node} is not part of this {@link GraphPane}.
+     */
+    public void setNodeFillColor(N node, Color color) {
+        LabeledNode labeledNode = nodes.get(new LocationNode<>(node, nodeLocations.get(node).location()));
+
+        if (labeledNode == null) {
+            throw new IllegalArgumentException("The given node is not part of this GraphPane");
+        }
+
+        labeledNode.setFillColor(color);
+    }
+
+    /**
      * Resets the color used to draw the given {@linkplain N node} to the default color ({@link GraphStyle#DEFAULT_NODE_COLOR}).
      *
      * @param node The {@linkplain N node} to update.
      * @throws IllegalArgumentException If the given {@linkplain N node} is not part of this {@link GraphPane}.
      */
     public void resetNodeColor(N node) {
-        setNodeColor(node, DEFAULT_NODE_COLOR);
+        setNodeStrokeColor(node, DEFAULT_NODE_COLOR);
     }
 
     /**
@@ -656,6 +674,10 @@ public class GraphPane<N> extends Pane {
 
         public void setStrokeColor(Color strokeColor) {
             ellipse.setStroke(strokeColor);
+        }
+
+        public void setFillColor(Color fillColor) {
+            ellipse.setFill(fillColor);
         }
 
         @Override

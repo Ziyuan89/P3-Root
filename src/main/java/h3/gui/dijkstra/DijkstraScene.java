@@ -60,7 +60,7 @@ public class DijkstraScene<N> extends AnimationScene {
                     graphPane.setEdgeColor(edge, DIJKSTRA_CURRENT_EDGE);
                     graphPane.setEdgeDash(edge, DIJKSTRA_CURRENT_EDGE_DASHED, DIJKSTRA_CURRENT_EDGE_DASH_LENGTH, DIJKSTRA_CURRENT_EDGE_GAP_LENGTH);
                 } else if (Objects.equals(animation.getPredecessorNode(edge.a()), edge.b()) ||
-                Objects.equals(animation.getPredecessorNode(edge.b()), edge.a())) {
+                    Objects.equals(animation.getPredecessorNode(edge.b()), edge.a())) {
                     graphPane.setEdgeColor(edge, DIJKSTRA_PREDECESSOR_EDGE);
                     graphPane.setEdgeDash(edge, DIJKSTRA_PREDECESSOR_EDGE_DASHED, DIJKSTRA_PREDECESSOR_EDGE_DASH_LENGTH, DIJKSTRA_PREDECESSOR_EDGE_GAP_LENGTH);
                 } else {
@@ -71,17 +71,25 @@ public class DijkstraScene<N> extends AnimationScene {
 
             for (N node : graph.getNodes()) {
                 if (node.equals(viaNode)) {
-                    graphPane.setNodeColor(node, DIJKSTRA_CURRENT_NODE);
+                    graphPane.setNodeStrokeColor(node, DIJKSTRA_CURRENT_NODE_STROKE_COLOR);
+                    graphPane.setNodeFillColor(node, DIJKSTRA_CURRENT_NODE_FILL_COLOR);
                 } else if (visitedNodes.contains(node)) {
-                    graphPane.setNodeColor(node, DIJKSTRA_VISITED_NODE);
+                    graphPane.setNodeStrokeColor(node, DIJKSTRA_VISITED_NODE_STROKE_COLOR);
+                    graphPane.setNodeFillColor(node, DIJKSTRA_VISITED_NODE_FILL_COLOR);
                 } else {
-                    graphPane.setNodeColor(node, DIJKSTRA_UNVISITED_NODE);
+                    graphPane.setNodeStrokeColor(node, DIJKSTRA_UNVISITED_NODE_STROKE_COLOR);
+                    graphPane.setNodeFillColor(node, DIJKSTRA_UNVISITED_NODE_FILL_COLOR);
                 }
             }
         } else {
             for (Edge<N> edge : graph.getEdges()) {
                 graphPane.setEdgeColor(edge, DIJKSTRA_UNVISITED_EDGE);
                 graphPane.setEdgeDash(edge, DIJKSTRA_UNVISITED_EDGE_DASHED, DIJKSTRA_UNVISITED_EDGE_DASH_LENGTH, DIJKSTRA_UNVISITED_EDGE_GAP_LENGTH);
+            }
+
+            for (N node : graph.getNodes()) {
+                graphPane.setNodeStrokeColor(node, DIJKSTRA_UNVISITED_NODE_STROKE_COLOR);
+                graphPane.setNodeFillColor(node, DIJKSTRA_UNVISITED_NODE_FILL_COLOR);
             }
         }
 
@@ -92,11 +100,13 @@ public class DijkstraScene<N> extends AnimationScene {
 
     public void showResult(List<N> path) {
         for (Edge<N> edge : graph.getEdges()) {
-            graphPane.resetEdgeColor(edge);
+            graphPane.setEdgeColor(edge, DIJKSTRA_UNVISITED_EDGE);
+            graphPane.setEdgeDash(edge, DIJKSTRA_UNVISITED_EDGE_DASHED, DIJKSTRA_UNVISITED_EDGE_DASH_LENGTH, DIJKSTRA_UNVISITED_EDGE_GAP_LENGTH);
         }
 
         for (N node : graph.getNodes()) {
-            graphPane.resetNodeColor(node);
+            graphPane.setNodeStrokeColor(node, DIJKSTRA_UNVISITED_NODE_STROKE_COLOR);
+            graphPane.setNodeFillColor(node, DIJKSTRA_UNVISITED_NODE_FILL_COLOR);
         }
 
         for (int i = 0; i < path.size() - 1; i++) {
@@ -104,17 +114,19 @@ public class DijkstraScene<N> extends AnimationScene {
             N nextNode = path.get(i + 1);
 
             Edge<N> edge = graph.getAdjacentEdges(node).stream()
-                    .filter(e -> e.a().equals(nextNode) || e.b().equals(nextNode))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("No edge between " + node + " and " + nextNode + " found"));
+                .filter(e -> e.a().equals(nextNode) || e.b().equals(nextNode))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("No edge between " + node + " and " + nextNode + " found"));
 
             graphPane.setEdgeColor(edge, DIJKSTRA_RESULT_EDGE);
             graphPane.setEdgeDash(edge, DIJKSTRA_RESULT_EDGE_DASHED, DIJKSTRA_RESULT_EDGE_DASH_LENGTH, DIJKSTRA_RESULT_EDGE_GAP_LENGTH);
 
-            graphPane.setNodeColor(node, DIJKSTRA_RESULT_NODE);
+            graphPane.setNodeStrokeColor(node, DIJKSTRA_RESULT_NODE_STROKE_COLOR);
+            graphPane.setNodeFillColor(node, DIJKSTRA_RESULT_NODE_FILL_COLOR);
         }
 
-        graphPane.setNodeColor(path.get(path.size() - 1), DIJKSTRA_RESULT_NODE);
+        graphPane.setNodeStrokeColor(path.get(path.size() - 1), DIJKSTRA_RESULT_NODE_STROKE_COLOR);
+        graphPane.setNodeFillColor(path.get(path.size() - 1), DIJKSTRA_RESULT_NODE_FILL_COLOR);
 
         controlPane.disableNextStepButton();
     }
