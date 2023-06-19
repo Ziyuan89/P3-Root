@@ -13,10 +13,6 @@ import java.util.Set;
 
 public class MyApplication extends Application {
 
-    public static void launch(String[] args) {
-        Application.launch(args);
-    }
-
     @Override
     public void start(Stage primaryStage) {
 
