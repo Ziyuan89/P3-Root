@@ -58,7 +58,7 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
 
             Set<Edge<N>> neighbors = graph.getAdjacentEdges(node);
             for (Edge<N> neighborEdge : neighbors) {
-                N neighborNode = neighborEdge.a() == node ? neighborEdge.b() : neighborEdge.a();
+                N neighborNode = neighborEdge.a().equals(node) ? neighborEdge.b() : neighborEdge.a();
                 if (remainingNodes.contains(neighborNode)) {
                     relax(node, neighborNode, neighborEdge);
                 }
@@ -130,7 +130,7 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
     protected List<N> reconstructPath(N start, N target) {
         LinkedList<N> shortestPath = new LinkedList<>();
         N current = target;
-        while (current != start) {
+        while (!current.equals(start)) {
             shortestPath.addFirst(current);
             current = predecessors.get(current);
         }
