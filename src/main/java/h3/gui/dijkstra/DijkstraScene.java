@@ -11,6 +11,7 @@ import javafx.scene.layout.BorderPane;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static h3.gui.GraphStyle.*;
 
@@ -57,7 +58,8 @@ public class DijkstraScene<N> extends AnimationScene {
             for (Edge<N> edge : graph.getEdges()) {
                 if (edge.equals(visitedEdge)) {
                     graphPane.setEdgeColor(edge, DIJKSTRA_CURRENT_EDGE);
-                } else if (animation.getPredecessorNode(edge.a()).equals(edge.b()) || animation.getPredecessorNode(edge.b()).equals(edge.a())) {
+                } else if (Objects.equals(animation.getPredecessorNode(edge.a()), edge.b()) ||
+                Objects.equals(animation.getPredecessorNode(edge.b()), edge.a())) {
                     graphPane.setEdgeColor(edge, DIJKSTRA_PREDECESSOR_EDGE);
                 } else {
                     graphPane.setEdgeColor(edge, DIJKSTRA_UNVISITED_EDGE);
