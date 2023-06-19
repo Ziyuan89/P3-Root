@@ -2,32 +2,7 @@ package h3.graph;
 
 import java.util.Objects;
 
-public class EdgeImpl<N> implements Graph.Edge<N> {
-
-    private final N A;
-    private final N B;
-    private final int weight;
-
-    public EdgeImpl(N a, N b, int weight) {
-        A = a;
-        B = b;
-        this.weight = weight;
-    }
-
-    @Override
-    public N getA() {
-        return A;
-    }
-
-    @Override
-    public N getB() {
-        return B;
-    }
-
-    @Override
-    public int getWeight() {
-        return weight;
-    }
+record EdgeImpl<N>(N a, N b, int weight) implements Graph.Edge<N> {
 
     @Override
     public boolean equals(Object o) {
@@ -35,12 +10,12 @@ public class EdgeImpl<N> implements Graph.Edge<N> {
         if (o == null || getClass() != o.getClass()) return false;
         EdgeImpl<?> edge = (EdgeImpl<?>) o;
         return weight == edge.weight &&
-            ((Objects.equals(A, edge.A) && Objects.equals(B, edge.B)) ||
-                (Objects.equals(A, edge.B) && Objects.equals(B, edge.A)));
+            ((Objects.equals(a, edge.a) && Objects.equals(b, edge.b)) ||
+                (Objects.equals(a, edge.b) && Objects.equals(b, edge.a)));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(A, B, weight) + Objects.hash(B, A, weight);
+        return Objects.hash(a, b, weight) + Objects.hash(a, b, weight);
     }
 }

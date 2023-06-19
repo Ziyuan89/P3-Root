@@ -1,6 +1,5 @@
 package h3.gui;
 
-import h3.graph.EdgeImpl;
 import h3.graph.Graph;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
@@ -50,10 +49,10 @@ public class GraphPane<N> extends Pane {
 
     public GraphPane(Graph<N> graph, Map<N, Location> nodeLocations) {
         this(graph.getNodes().stream().map(node -> new LocationNode<>(node, nodeLocations.get(node))).toList(),
-            graph.getEdges().stream().map(edge -> new EdgeImpl<>(
-                new LocationNode<>(edge.getA(), nodeLocations.get(edge.getA())),
-                new LocationNode<>(edge.getB(), nodeLocations.get(edge.getB())),
-                edge.getWeight())
+            graph.getEdges().stream().map(edge -> Graph.Edge.of(
+                new LocationNode<>(edge.a(), nodeLocations.get(edge.a())),
+                new LocationNode<>(edge.b(), nodeLocations.get(edge.b())),
+                edge.weight())
             ).toList());
     }
 
@@ -128,11 +127,11 @@ public class GraphPane<N> extends Pane {
      * @param color The new color.
      * @throws IllegalArgumentException If the given {@linkplain Graph.Edge edge} is not part of this {@link GraphPane}.
      */
-    public synchronized void setEdgeColor(Graph.Edge<N> edge, Color color) {
-        LabeledEdge labeledEdge = edges.get(new EdgeImpl<>(
-            new LocationNode<>(edge.getA(), nodeLocations.get(edge.getA()).location()),
-            new LocationNode<>(edge.getB(), nodeLocations.get(edge.getB()).location()),
-            edge.getWeight()));
+    public void setEdgeColor(Graph.Edge<N> edge, Color color) {
+        LabeledEdge labeledEdge = edges.get(Graph.Edge.of(
+            new LocationNode<>(edge.a(), nodeLocations.get(edge.a()).location()),
+            new LocationNode<>(edge.b(), nodeLocations.get(edge.b()).location()),
+            edge.weight()));
 
         if (labeledEdge == null) {
             throw new IllegalArgumentException("The given edge is not part of this GraphPane");
@@ -147,7 +146,7 @@ public class GraphPane<N> extends Pane {
      * @param edge The {@linkplain Graph.Edge edge} to update.
      * @throws IllegalArgumentException If the given {@linkplain Graph.Edge edge} is not part of this {@link GraphPane}.
      */
-    public synchronized void resetEdgeColor(Graph.Edge<N> edge) {
+    public void resetEdgeColor(Graph.Edge<N> edge) {
         setEdgeColor(edge, DEFAULT_EDGE_COLOR);
     }
 
@@ -172,8 +171,8 @@ public class GraphPane<N> extends Pane {
         }
 
         Point2D transformedMidPoint = transform(midPoint(edge));
-        Point2D transformedPointA = transform(edge.getA().location());
-        Point2D transformedPointB = transform(edge.getB().location());
+        Point2D transformedPointA = transform(edge.a().location());
+        Point2D transformedPointB = transform(edge.b().location());
 
         LabeledEdge labeledEdge = edges.get(edge);
 
@@ -429,8 +428,8 @@ public class GraphPane<N> extends Pane {
     }
 
     private LabeledEdge drawEdge(Graph.Edge<LocationNode<N>> edge) {
-        Location a = edge.getA().location();
-        Location b = edge.getB().location();
+        Location a = edge.a().location();
+        Location b = edge.b().location();
 
         Point2D transformedA = transform(a);
         Point2D transformedB = transform(b);
@@ -440,7 +439,7 @@ public class GraphPane<N> extends Pane {
         line.setStrokeWidth(EDGE_STROKE_WIDTH);
 
         Point2D transformedMidPoint = transform(midPoint(edge));
-        Text text = new Text(transformedMidPoint.getX(), transformedMidPoint.getY(), Integer.toString(edge.getWeight()));
+        Text text = new Text(transformedMidPoint.getX(), transformedMidPoint.getY(), Integer.toString(edge.weight()));
         text.setStroke(TEXT_COLOR);
 
         getChildren().addAll(line, text);
@@ -526,8 +525,8 @@ public class GraphPane<N> extends Pane {
     }
 
     private Point2D midPoint(Graph.Edge<LocationNode<N>> edge) {
-        var l1 = edge.getA().location();
-        var l2 = edge.getB().location();
+        var l1 = edge.a().location();
+        var l2 = edge.b().location();
         return new Point2D.Double((l1.x() + l2.x()) / 2d, (l1.y() + l2.y()) / 2d);
     }
 

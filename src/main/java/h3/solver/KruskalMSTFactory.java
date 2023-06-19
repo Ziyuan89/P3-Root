@@ -46,10 +46,10 @@ public class KruskalMSTFactory<N> implements MSTFactory<N> {
         // check if edge's nodes are in the same MST
         for (int i = 0; i < mstGroups.size(); i++) {
             Set<N> group = mstGroups.get(i);
-            if (group.contains(edge.getA())) {
+            if (group.contains(edge.a())) {
                 aIndex = i;
             }
-            if (group.contains(edge.getB())) {
+            if (group.contains(edge.b())) {
                 bIndex = i;
             }
             if (aIndex != -1 && bIndex != -1) {

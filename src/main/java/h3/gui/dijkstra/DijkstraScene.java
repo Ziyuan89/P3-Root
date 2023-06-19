@@ -56,7 +56,7 @@ public class DijkstraScene<N> extends AnimationScene {
             for (Graph.Edge<N> edge : graph.getEdges()) {
                 if (edge.equals(visitedEdge)) {
                     graphPane.setEdgeColor(edge, DIJKSTRA_CURRENT_EDGE);
-                } else if (animation.getPredecessorNode(edge.getA()).equals(edge.getB()) || animation.getPredecessorNode(edge.getB()).equals(edge.getA())) {
+                } else if (animation.getPredecessorNode(edge.a()).equals(edge.b()) || animation.getPredecessorNode(edge.b()).equals(edge.a())) {
                     graphPane.setEdgeColor(edge, DIJKSTRA_PREDECESSOR_EDGE);
                 } else {
                     graphPane.setEdgeColor(edge, DIJKSTRA_UNVISITED_EDGE);
@@ -93,7 +93,7 @@ public class DijkstraScene<N> extends AnimationScene {
             N nextNode = path.get(i + 1);
 
             Graph.Edge<N> edge = graph.getAdjacentEdges(node).stream()
-                    .filter(e -> e.getA().equals(nextNode) || e.getB().equals(nextNode))
+                    .filter(e -> e.a().equals(nextNode) || e.b().equals(nextNode))
                     .findFirst()
                     .orElseThrow(() -> new RuntimeException("No edge between " + node + " and " + nextNode + " found"));
             graphPane.setEdgeColor(edge, DIJKSTRA_RESULT_EDGE);

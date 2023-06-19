@@ -50,7 +50,7 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
 
             Set<Edge<N>> neighbors = graph.getAdjacentEdges(node);
             for (Edge<N> neighborEdge : neighbors) {
-                N neighborNode = neighborEdge.getA() == node ? neighborEdge.getB() : neighborEdge.getA();
+                N neighborNode = neighborEdge.a() == node ? neighborEdge.b() : neighborEdge.a();
                 if (remainingNodes.contains(neighborNode)) {
                     relax(node, neighborNode, neighborEdge);
                 }
@@ -106,7 +106,7 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
      * @param edge the edge between {@code via} and {@code dest}.
      */
     protected void relax(N via, N dest, Edge<N> edge) {
-        int newDistance = distance.get(via) + edge.getWeight();
+        int newDistance = distance.get(via) + edge.weight();
         if (newDistance < distance.get(dest)) {
             distance.put(dest, newDistance);
             predecessors.put(dest, via);

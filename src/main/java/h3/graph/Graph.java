@@ -10,11 +10,42 @@ public interface Graph<N> {
 
     Set<Edge<N>> getAdjacentEdges(N node);
 
+    /**
+     * Creates a mutable copy of this graph with the same nodes and edges.
+     *
+     * <p>
+     * The nodes and edges in the copy are the same objects as in the original graph.
+     * Only the graph structure is copied.
+     * </p>
+     */
+    MutableGraph<N> toMutableGraph();
+
+    /**
+     * Creates an immutable copy of this graph with the same nodes and edges if the graph is mutable,
+     * or returns the graph itself if it is already immutable.
+     *
+     * <p>
+     * The nodes and edges in the copy are the same objects as in the original graph.
+     * Only the graph structure is copied.
+     * </p>
+     */
+    Graph<N> toGraph();
+
+
+    @SuppressWarnings("unchecked")
+    static <N> Graph<N> of() {
+        return (Graph<N>) BasicGraph.EMPTY;
+    }
+
+    static <N> Graph<N> of(Set<N> nodes, Set<Edge<N>> edges) {
+        return new BasicGraph<>(nodes, edges);
+    }
+
     interface Edge<N> extends Comparable<Edge<N>> {
 
-        N getA();
+        N a();
 
-        N getB();
+        N b();
 
         /**
          * The weight of the edge. The precise meaning of this value is up to the user.
@@ -25,7 +56,7 @@ public interface Graph<N> {
          *
          * @return the weight of the edge
          */
-        int getWeight();
+        int weight();
 
         /**
          * Two edges are equal if they have the same nodes and weight.
@@ -50,37 +81,11 @@ public interface Graph<N> {
          */
         @Override
         default int compareTo(Graph.Edge<N> other) {
-            return Integer.compare(getWeight(), other.getWeight());
+            return Integer.compare(weight(), other.weight());
         }
 
         static <N> Graph.Edge<N> of(N a, N b, int weight) {
-            return new Graph.Edge<>() {
-                @Override
-                public N getA() {
-                    return a;
-                }
-
-                @Override
-                public N getB() {
-                    return b;
-                }
-
-                @Override
-                public int getWeight() {
-                    return weight;
-                }
-            };
+            return new EdgeImpl<>(a, b, weight);
         }
-    }
-
-    interface Builder<N> {
-
-        Builder<N> addNode(N node);
-
-        Builder<N> addEdge(N a, N b, int weight);
-
-        Builder<N> addEdgesAndNodes(N a, N b, int weight);
-
-        Graph<N> build();
     }
 }

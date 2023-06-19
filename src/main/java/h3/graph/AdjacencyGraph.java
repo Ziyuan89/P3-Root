@@ -28,7 +28,7 @@ public class AdjacencyGraph<N> implements Graph<N> {
             index++;
         }
         for (Edge<N> edge : edges) {
-            matrix.addEdge(nodeIndices.get(edge.getA()), nodeIndices.get(edge.getB()), edge.getWeight());
+            matrix.addEdge(nodeIndices.get(edge.a()), nodeIndices.get(edge.b()), edge.weight());
         }
     }
 
@@ -50,7 +50,17 @@ public class AdjacencyGraph<N> implements Graph<N> {
     public Set<Edge<N>> getAdjacentEdges(N node) {
         return IntStream.range(0, nodeIndices.size())
             .mapToObj(i -> Edge.of(node, indexNodes.get(i), matrix.getWeight(nodeIndices.get(node), i)))
-            .filter(edge -> edge.getWeight() > 0)
+            .filter(edge -> edge.weight() > 0)
             .collect(Collectors.toSet());
+    }
+
+    @Override
+    public MutableGraph<N> toMutableGraph() {
+        return MutableGraph.of(nodes, edges);
+    }
+
+    @Override
+    public Graph<N> toGraph() {
+        return this;
     }
 }

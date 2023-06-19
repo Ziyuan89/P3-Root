@@ -1,6 +1,7 @@
 package h3.graph;
 
-import java.util.Collections;
+import h3.SetUtils;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -15,11 +16,11 @@ public class BasicGraph<N> implements Graph<N> {
     public BasicGraph(Set<N> nodes, Set<Graph.Edge<N>> edges) {
         backing = nodes.stream()
             .map(n -> Map.entry(n, edges.stream()
-                .filter(e -> Objects.equals(e.getA(), n) || Objects.equals(e.getB(), n))
+                .filter(e -> Objects.equals(e.a(), n) || Objects.equals(e.b(), n))
                 .collect(Collectors.toUnmodifiableSet())))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        this.nodes = Collections.unmodifiableSet(nodes);
-        this.edges = Collections.unmodifiableSet(edges);
+        this.nodes = SetUtils.immutableCopyOf(nodes);
+        this.edges = SetUtils.immutableCopyOf(edges);
     }
 
     @Override
@@ -40,4 +41,16 @@ public class BasicGraph<N> implements Graph<N> {
         }
         return result;
     }
+
+    @Override
+    public MutableGraph<N> toMutableGraph() {
+        return MutableGraph.of(nodes, edges);
+    }
+
+    @Override
+    public Graph<N> toGraph() {
+        return this;
+    }
+
+    static Graph<Object> EMPTY = new BasicGraph<>(Set.of(), Set.of());
 }
