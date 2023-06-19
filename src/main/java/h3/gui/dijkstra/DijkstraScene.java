@@ -46,7 +46,7 @@ public class DijkstraScene<N> extends AnimationScene {
         root.setRight(infoPane);
 
         controlPane = new ControlPane();
-        controlPane.init(animation);
+        controlPane.init(animation, graphPane);
         root.setBottom(controlPane);
 
         new Thread(() -> animation.start()).start();
