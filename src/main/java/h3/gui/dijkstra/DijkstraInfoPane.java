@@ -4,10 +4,9 @@ import h3.graph.Graph;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 import java.util.List;
 
@@ -16,20 +15,28 @@ public class DijkstraInfoPane<N> extends Pane {
     private ObservableList<N> nodes;
     private final Graph<N> graph;
     private final AnimatedDijkstraPathCalculator<N> animation;
+    private Label label;
 
     public DijkstraInfoPane(Graph<N> graph, AnimatedDijkstraPathCalculator<N> animation) {
         this.graph = graph;
         this.animation = animation;
 
-        createTableView();
+        createLabel();
+
+        VBox vBox = new VBox();
+        vBox.getChildren().addAll(createTableView(), label);
+        getChildren().add(vBox);
     }
 
     public void refresh() {
         nodes.clear();
         nodes.addAll(graph.getNodes());
+
+        label.setText(getText());
     }
 
-    private void createTableView() {
+    @SuppressWarnings("DuplicatedCode")
+    private ScrollPane createTableView() {
         nodes = FXCollections.observableArrayList(graph.getNodes());
 
         TableView<N> tableView = new TableView<>(nodes);
@@ -48,7 +55,16 @@ public class DijkstraInfoPane<N> extends Pane {
 
         tableView.getColumns().addAll(List.of(nameColumn, distanceColumn, predecessorColumn));
 
-        getChildren().add(scrollPane);
+        return scrollPane;
+    }
+
+    private void createLabel() {
+        label = new Label();
+        label.setText(getText());
+    }
+
+    private String getText() {
+        return "RemainingNodes: " + animation.getRemainingNodes();
     }
 
 }

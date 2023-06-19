@@ -42,7 +42,11 @@ public class AnimatedDijkstraPathCalculator<N> extends DijkstraPathCalculator<N>
     @Override
     public void start() {
         List<N> path = super.calculatePath(start, end);
-        dijkstraScene.showResult(path);
+
+        Platform.runLater(() -> {
+            dijkstraScene.refresh(null, null);
+            dijkstraScene.showResult(path);
+        });
     }
 
     @Override
@@ -60,6 +64,10 @@ public class AnimatedDijkstraPathCalculator<N> extends DijkstraPathCalculator<N>
 
     public N getPredecessorNode(N node) {
         return predecessors.get(node);
+    }
+
+    public Set<N> getRemainingNodes() {
+        return remainingNodes;
     }
 
     private void waitUntilNextStep() {
