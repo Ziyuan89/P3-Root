@@ -24,10 +24,10 @@ public class AnimatedDijkstraPathCalculator<N> extends DijkstraPathCalculator<N>
     }
 
     @Override
-    protected void relax(N via, N dest, Edge<N> edge) {
-        super.relax(via, dest, edge);
+    protected void relax(N from, N to, Edge<N> edge) {
+        super.relax(from, to, edge);
 
-        Platform.runLater(() -> dijkstraScene.refresh(edge, via));
+        Platform.runLater(() -> dijkstraScene.refresh(edge, from));
         waitUntilNextStep();
     }
 

@@ -104,18 +104,18 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
     }
 
     /**
-     * Update the {@link #distances} and {@link #predecessors} maps if a shorter path between {@code via} and
-     * {@code dest} is found.
+     * Update the {@link #distances} and {@link #predecessors} maps if a shorter path between {@code from} and
+     * {@code to} is found.
      *
-     * @param via  the node that is used to reach {@code dest}
-     * @param dest the target node for this update
-     * @param edge the edge between {@code via} and {@code dest}.
+     * @param from  the node that is used to reach {@code to}
+     * @param to the target node for this update
+     * @param edge the edge between {@code from} and {@code to}.
      */
-    protected void relax(N via, N dest, Edge<N> edge) {
-        int newDistance = distances.get(via) + edge.weight();
-        if (newDistance < distances.get(dest)) {
-            distances.put(dest, newDistance);
-            predecessors.put(dest, via);
+    protected void relax(N from, N to, Edge<N> edge) {
+        int newDistance = distances.get(from) + edge.weight();
+        if (newDistance < distances.get(to)) {
+            distances.put(to, newDistance);
+            predecessors.put(to, from);
         }
     }
 
