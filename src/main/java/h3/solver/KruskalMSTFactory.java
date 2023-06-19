@@ -58,6 +58,12 @@ public class KruskalMSTFactory<N> implements MSTFactory<N> {
             }
         }
 
+        if (aIndex == -1 || bIndex == -1) {
+            // edge's nodes are not in any MST
+            // this should never happen
+            throw new IllegalStateException("Edge's nodes are not in any MST");
+        }
+
         if (aIndex == bIndex) {
             // edge's nodes are in the same MST
             // skip this edge, or it will create a cycle
