@@ -82,13 +82,21 @@ public class BasicMutableGraph<N> implements MutableGraph<N> {
 
     @Override
     public MutableGraph<N> putEdgesAndNodes(N a, N b, int weight) {
+        nodes.add(a);
+        nodes.add(b);
+
         final Set<Edge<N>> edgesA = backing.computeIfAbsent(a, k -> new HashSet<>());
         final Set<Edge<N>> edgesB = backing.computeIfAbsent(b, k -> new HashSet<>());
 
         final Edge<N> edge = Edge.of(a, b, weight);
         edgesA.add(edge);
         edgesB.add(edge);
+
+        backing.put(a, edgesA);
+        backing.put(b, edgesB);
+
         edges.add(edge);
+
         return this;
     }
 }
