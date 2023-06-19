@@ -55,7 +55,7 @@ public class AnimatedDijkstraPathCalculator<N> extends DijkstraPathCalculator<N>
     }
 
     public String getDistance(N node) {
-        return Objects.toString(distance.get(node));
+        return Objects.toString(distances.get(node));
     }
 
     public String getPredecessor(N node) {

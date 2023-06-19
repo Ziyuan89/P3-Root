@@ -21,7 +21,7 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
     public static PathCalculator.Factory FACTORY = DijkstraPathCalculator::new;
 
     protected final Graph<N> graph;
-    protected final Map<N, Integer> distance = new HashMap<>();
+    protected final Map<N, Integer> distances = new HashMap<>();
     protected final Map<N, N> predecessors = new HashMap<>();
     protected final Set<N> remainingNodes = new HashSet<>();
 
@@ -34,7 +34,7 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
      *
      * <p>
      * This method calculates the shortest path from {@code start} to all other nodes and saves the results
-     * to {@link #distance} and {@link #predecessors}. All subsequent calls to this method with the <i>same</i>
+     * to {@link #distances} and {@link #predecessors}. All subsequent calls to this method with the <i>same</i>
      * start node will use the cached results instead of recalculating. Only when a subsequent call uses a
      * different start node, the algorithm is run again and those results are cached.
      * </p>
@@ -46,7 +46,7 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
      */
     @Override
     public List<N> calculatePath(final N start, final N end) {
-        if (distance.containsKey(start) && distance.get(start) == 0) {
+        if (distances.containsKey(start) && distances.get(start) == 0) {
             return reconstructPath(start, end);
         }
 
@@ -69,23 +69,23 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
     }
 
     /**
-     * Initializes the {@link #distance} and {@link #predecessors} maps, i.e., resets and repopulates them with
+     * Initializes the {@link #distances} and {@link #predecessors} maps, i.e., resets and repopulates them with
      * default values.
      *
      * @param start the start node
      */
     protected void init(N start) {
         // reset
-        distance.clear();
+        distances.clear();
         predecessors.clear();
         remainingNodes.clear();
 
         // repopulate with default values
         for (N node : graph.getNodes()) {
-            distance.put(node, Integer.MAX_VALUE);
+            distances.put(node, Integer.MAX_VALUE);
             predecessors.put(node, null);
         }
-        distance.put(start, 0);
+        distances.put(start, 0);
         remainingNodes.addAll(graph.getNodes());
     }
 
@@ -96,7 +96,7 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
      * @return the next unprocessed node with minimal weight
      */
     protected N extractMin(Set<N> remainingNodes) {
-        return distance.entrySet()
+        return distances.entrySet()
             .stream()
             .filter(entry -> remainingNodes.contains(entry.getKey()))
             .min(Comparator.comparingInt(Map.Entry::getValue))
@@ -105,7 +105,7 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
     }
 
     /**
-     * Update the {@link #distance} and {@link #predecessors} maps if a shorter path between {@code via} and
+     * Update the {@link #distances} and {@link #predecessors} maps if a shorter path between {@code via} and
      * {@code dest} is found.
      *
      * @param via  the node that is used to reach {@code dest}
@@ -113,9 +113,9 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
      * @param edge the edge between {@code via} and {@code dest}.
      */
     protected void relax(N via, N dest, Edge<N> edge) {
-        int newDistance = distance.get(via) + edge.weight();
-        if (newDistance < distance.get(dest)) {
-            distance.put(dest, newDistance);
+        int newDistance = distances.get(via) + edge.weight();
+        if (newDistance < distances.get(dest)) {
+            distances.put(dest, newDistance);
             predecessors.put(dest, via);
         }
     }
