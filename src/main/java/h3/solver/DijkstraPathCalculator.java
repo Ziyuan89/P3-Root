@@ -53,7 +53,7 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
         init(start);
 
         while (!remainingNodes.isEmpty()) {
-            N node = extractMin(remainingNodes);
+            N node = extractMin();
             remainingNodes.remove(node);
 
             Set<Edge<N>> neighbors = graph.getAdjacentEdges(node);
@@ -92,10 +92,9 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
     /**
      * Select the next node from the set of remaining nodes.
      *
-     * @param remainingNodes the set of remaining nodes
      * @return the next unprocessed node with minimal weight
      */
-    protected N extractMin(Set<N> remainingNodes) {
+    protected N extractMin() {
         return distances.entrySet()
             .stream()
             .filter(entry -> remainingNodes.contains(entry.getKey()))
