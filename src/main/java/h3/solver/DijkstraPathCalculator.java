@@ -1,9 +1,15 @@
 package h3.solver;
 
-import h3.graph.Graph;
 import h3.graph.Edge;
+import h3.graph.Graph;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Implementation of Dijkstra's algorithm, a single-source shortest path algorithm.
@@ -11,6 +17,8 @@ import java.util.*;
  * @param <N> node identifier
  */
 public class DijkstraPathCalculator<N> implements PathCalculator<N> {
+
+    public static PathCalculator.Factory FACTORY = DijkstraPathCalculator::new;
 
     protected final Graph<N> graph;
     protected final Map<N, Integer> distance = new HashMap<>();
@@ -25,10 +33,10 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
      * Calculate the shortest path between two given nodes, {@code start} and {@code end}, using Dijkstra's algorithm.
      *
      * <p>
-     *     This method calculates the shortest path from {@code start} to all other nodes and saves the results
-     *     to {@link #distance} and {@link #predecessors}. All subsequent calls to this method with the <i>same</i>
-     *     start node will use the cached results instead of recalculating. Only when a subsequent call uses a
-     *     different start node, the algorithm is run again and those results are cached.
+     * This method calculates the shortest path from {@code start} to all other nodes and saves the results
+     * to {@link #distance} and {@link #predecessors}. All subsequent calls to this method with the <i>same</i>
+     * start node will use the cached results instead of recalculating. Only when a subsequent call uses a
+     * different start node, the algorithm is run again and those results are cached.
      * </p>
      *
      * @param start the start node, first node in the returned list
@@ -42,7 +50,7 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
             return reconstructPath(start, end);
         }
 
-        init(graph, start);
+        init(start);
 
         while (!remainingNodes.isEmpty()) {
             N node = extractMin(remainingNodes);
@@ -64,10 +72,9 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
      * Initializes the {@link #distance} and {@link #predecessors} maps, i.e., resets and repopulates them with
      * default values.
      *
-     * @param graph the graph which nodes to use
      * @param start the start node
      */
-    protected void init(Graph<N> graph, N start) {
+    protected void init(N start) {
         // reset
         distance.clear();
         predecessors.clear();

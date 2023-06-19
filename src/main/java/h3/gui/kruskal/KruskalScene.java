@@ -23,7 +23,7 @@ public class KruskalScene<N> extends AnimationScene {
     private Map<N, Location> nodeLocations;
     private KruskalInfoPane<N> infoPane;
     private ControlPane controlPane;
-    private AnimatedKruskalMSTFactory<N> animation;
+    private AnimatedKruskalMSTCalculator<N> animation;
 
     private final List<Edge<N>> acceptedEdges = new ArrayList<>();
     private final List<Edge<N>> rejectedEdges = new ArrayList<>();
@@ -41,7 +41,7 @@ public class KruskalScene<N> extends AnimationScene {
         graphPane = new GraphPane<>(graph, nodeLocations);
         root.setCenter(graphPane);
 
-        animation = new AnimatedKruskalMSTFactory<>(graph, this);
+        animation = new AnimatedKruskalMSTCalculator<>(graph, this);
 
         infoPane = new KruskalInfoPane<>(graph, animation);
         root.setRight(infoPane);

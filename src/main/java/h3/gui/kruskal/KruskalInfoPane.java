@@ -16,9 +16,9 @@ public class KruskalInfoPane<N> extends Pane {
 
     private ObservableList<N> nodes;
     private final Graph<N> graph;
-    private final AnimatedKruskalMSTFactory<N> animation;
+    private final AnimatedKruskalMSTCalculator<N> animation;
 
-    public KruskalInfoPane(Graph<N> graph, AnimatedKruskalMSTFactory<N> animation) {
+    public KruskalInfoPane(Graph<N> graph, AnimatedKruskalMSTCalculator<N> animation) {
         this.graph = graph;
         this.animation = animation;
 

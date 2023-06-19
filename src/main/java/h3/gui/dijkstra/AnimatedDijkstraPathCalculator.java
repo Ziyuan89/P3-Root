@@ -32,8 +32,8 @@ public class AnimatedDijkstraPathCalculator<N> extends DijkstraPathCalculator<N>
     }
 
     @Override
-    protected void init(Graph<N> graph, N start) {
-        super.init(graph, start);
+    protected void init(N start) {
+        super.init(start);
 
         Platform.runLater(() -> dijkstraScene.refresh(null, null));
         waitUntilNextStep();

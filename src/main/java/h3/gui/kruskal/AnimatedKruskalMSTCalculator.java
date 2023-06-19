@@ -3,31 +3,26 @@ package h3.gui.kruskal;
 import h3.graph.Edge;
 import h3.graph.Graph;
 import h3.gui.Animation;
-import h3.solver.KruskalMSTFactory;
+import h3.solver.KruskalMSTCalculator;
 import javafx.application.Platform;
 
 import java.util.List;
 import java.util.Set;
 
-public class AnimatedKruskalMSTFactory<N> extends KruskalMSTFactory<N> implements Animation {
+public class AnimatedKruskalMSTCalculator<N> extends KruskalMSTCalculator<N> implements Animation {
 
     private static final Object syncObject = new Object();
 
     private final KruskalScene<N> kruskalScene;
-    private final Graph<N> graph;
 
-    private List<Set<N>> mstGroups = List.of();
-
-    public AnimatedKruskalMSTFactory(Graph<N> graph, KruskalScene<N> kruskalScene) {
-        super();
-        this.graph = graph;
+    public AnimatedKruskalMSTCalculator(Graph<N> graph, KruskalScene<N> kruskalScene) {
+        super(graph);
         this.kruskalScene = kruskalScene;
     }
 
     @Override
-    protected boolean acceptEdge(List<Set<N>> mstGroups, Edge<N> edge) {
-        boolean accepted = super.acceptEdge(mstGroups, edge);
-        this.mstGroups = mstGroups;
+    protected boolean acceptEdge(Edge<N> edge) {
+        boolean accepted = super.acceptEdge(edge);
 
         Platform.runLater(() -> kruskalScene.refresh(edge, accepted));
         waitUntilNextStep();
@@ -36,19 +31,16 @@ public class AnimatedKruskalMSTFactory<N> extends KruskalMSTFactory<N> implement
     }
 
     @Override
-    protected List<Set<N>> initGroups(Graph<N> graph) {
-        List<Set<N>> mstGroups =  super.initGroups(graph);
-        this.mstGroups = mstGroups;
+    protected void init() {
+        super.init();
 
         Platform.runLater(() -> kruskalScene.refresh(null, false));
         waitUntilNextStep();
-
-        return mstGroups;
     }
 
     @Override
     public void start() {
-        Graph<N> mst = super.createMST(graph);
+        Graph<N> mst = super.calculateMST();
 
         Platform.runLater(() -> kruskalScene.showResult(mst));
     }
