@@ -42,22 +42,32 @@ public class KruskalInfoPane<N> extends Pane {
         nameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().toString()));
 
         TableColumn<N, String> distanceColumn = new TableColumn<>("Set");
-        distanceColumn.setCellValueFactory(data -> new SimpleStringProperty(getSet(data.getValue()).toString()));
+        distanceColumn.setCellValueFactory(data -> new SimpleStringProperty(getSet(data.getValue())));
 
         tableView.getColumns().addAll(List.of(nameColumn, distanceColumn));
 
         getChildren().add(scrollPane);
     }
 
-    private Set<N> getSet(N node) {
+    private String getSet(N node) {
+
+        int setCount = 0;
+        Set<N> correspondingSet = null;
 
         for (Set<N> set : animation.getMstGroups()) {
             if (set.contains(node)) {
-                return set;
+                setCount++;
+                correspondingSet = set;
             }
         }
 
-        throw new IllegalStateException("Node not found in any set");
+        if (setCount == 1) {
+            return correspondingSet.toString();
+        } else if (setCount == 0) {
+            return "<no set found>";
+        } else {
+            return "<multiple sets found>";
+        }
     }
 
 }
