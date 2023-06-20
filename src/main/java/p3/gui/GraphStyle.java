@@ -29,18 +29,18 @@ public class GraphStyle {
 
     // --- Dijkstra --- //
 
-    public static final Color DIJKSTRA_VISITED_NODE_STROKE_COLOR = Color.RED;
+    public static final Color DIJKSTRA_VISITED_NODE_STROKE_COLOR = Color.ORANGE;
     public static final Color DIJKSTRA_VISITED_NODE_FILL_COLOR = DEFAULT_NODE_COLOR;
 
-    public static final Color DIJKSTRA_PREDECESSOR_EDGE = Color.RED;
+    public static final Color DIJKSTRA_PREDECESSOR_EDGE = Color.ORANGE;
     public static final boolean DIJKSTRA_PREDECESSOR_EDGE_DASHED = true;
     public static final double DIJKSTRA_PREDECESSOR_EDGE_DASH_LENGTH = 50;
     public static final double DIJKSTRA_PREDECESSOR_EDGE_GAP_LENGTH = 10;
 
-    public static final Color DIJKSTRA_CURRENT_NODE_STROKE_COLOR = Color.GREEN;
+    public static final Color DIJKSTRA_CURRENT_NODE_STROKE_COLOR = Color.BLUE;
     public static final Color DIJKSTRA_CURRENT_NODE_FILL_COLOR = DEFAULT_NODE_COLOR;
 
-    public static final Color DIJKSTRA_CURRENT_EDGE = Color.GREEN;
+    public static final Color DIJKSTRA_CURRENT_EDGE = Color.BLUE;
     public static final boolean DIJKSTRA_CURRENT_EDGE_DASHED = true;
     public static final double DIJKSTRA_CURRENT_EDGE_DASH_LENGTH = 50;
     public static final double DIJKSTRA_CURRENT_EDGE_GAP_LENGTH = 10;
@@ -53,22 +53,22 @@ public class GraphStyle {
     public static final double DIJKSTRA_UNVISITED_EDGE_DASH_LENGTH = 50;
     public static final double DIJKSTRA_UNVISITED_EDGE_GAP_LENGTH = 10;
 
-    public static final Color DIJKSTRA_RESULT_NODE_STROKE_COLOR = Color.GREEN;
+    public static final Color DIJKSTRA_RESULT_NODE_STROKE_COLOR = Color.BLUE;
     public static final Color DIJKSTRA_RESULT_NODE_FILL_COLOR = DEFAULT_NODE_COLOR;
 
-    public static final Color DIJKSTRA_RESULT_EDGE = Color.GREEN;
+    public static final Color DIJKSTRA_RESULT_EDGE = Color.BLUE;
     public static final boolean DIJKSTRA_RESULT_EDGE_DASHED = true;
     public static final double DIJKSTRA_RESULT_EDGE_DASH_LENGTH = 50;
     public static final double DIJKSTRA_RESULT_EDGE_GAP_LENGTH = 10;
 
     // --- Kruskal --- //
 
-    public static final Color KRUSKAL_ACCEPTED_EDGE = Color.GREEN;
+    public static final Color KRUSKAL_ACCEPTED_EDGE = Color.BLUE;
     public static final boolean KRUSKAL_ACCEPTED_EDGE_DASHED = true;
     public static final double KRUSKAL_ACCEPTED_EDGE_DASH_LENGTH = 50;
     public static final double KRUSKAL_ACCEPTED_EDGE_GAP_LENGTH = 10;
 
-    public static final Color KRUSKAL_REJECTED_EDGE = Color.RED;
+    public static final Color KRUSKAL_REJECTED_EDGE = Color.ORANGE;
     public static final boolean KRUSKAL_REJECTED_EDGE_DASHED = true;
     public static final double KRUSKAL_REJECTED_EDGE_DASH_LENGTH = 50;
     public static final double KRUSKAL_REJECTED_EDGE_GAP_LENGTH = 10;
@@ -78,7 +78,7 @@ public class GraphStyle {
     public static final double KRUSKAL_UNVISITED_EDGE_DASH_LENGTH = 50;
     public static final double KRUSKAL_UNVISITED_EDGE_GAP_LENGTH = 10;
 
-    public static final Color KRUSKAL_RESULT_EDGE = Color.GREEN;
+    public static final Color KRUSKAL_RESULT_EDGE = Color.BLUE;
     public static final boolean KRUSKAL_RESULT_EDGE_DASHED = false;
     public static final double KRUSKAL_RESULT_EDGE_DASH_LENGTH = 50;
     public static final double KRUSKAL_RESULT_EDGE_GAP_LENGTH = 10;
