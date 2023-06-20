@@ -46,10 +46,6 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
      */
     @Override
     public List<N> calculatePath(final N start, final N end) {
-        if (distances.containsKey(start) && distances.get(start) == 0) {
-            return reconstructPath(start, end);
-        }
-
         init(start);
 
         while (!remainingNodes.isEmpty()) {
@@ -59,9 +55,7 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
             Set<Edge<N>> neighbors = graph.getAdjacentEdges(node);
             for (Edge<N> neighborEdge : neighbors) {
                 N neighborNode = neighborEdge.a().equals(node) ? neighborEdge.b() : neighborEdge.a();
-                if (remainingNodes.contains(neighborNode)) {
-                    relax(node, neighborNode, neighborEdge);
-                }
+                relax(node, neighborNode, neighborEdge);
             }
         }
 
@@ -107,8 +101,8 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
      * Update the {@link #distances} and {@link #predecessors} maps if a shorter path between {@code from} and
      * {@code to} is found.
      *
-     * @param from  the node that is used to reach {@code to}
-     * @param to the target node for this update
+     * @param from the node that is used to reach {@code to}
+     * @param to   the target node for this update
      * @param edge the edge between {@code from} and {@code to}.
      */
     protected void relax(N from, N to, Edge<N> edge) {
