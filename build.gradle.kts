@@ -14,7 +14,7 @@ javafx {
 }
 
 jagr {
-    assignmentId.set("h3")
+    assignmentId.set("p3")
     submissions {
         val main by creating {
             studentId.set("ab12cdef")
@@ -25,9 +25,10 @@ jagr {
     graders {
         val graderPublic by creating {
             graderName.set("AuD-2023-P3-Public")
-            rubricProviderName.set("h3.H3_RubricProvider")
+            rubricProviderName.set("p3.P3_RubricProvider")
             configureDependencies {
                 implementation(libs.algoutils.tutor)
+                implementation(libs.junit.pioneer)
             }
         }
         val graderPrivate by creating {
@@ -44,7 +45,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("h3.Main")
+    mainClass.set("p3.Main")
 }
 
 tasks {

@@ -1,0 +1,8 @@
+{
+  "twoNodes": [
+    {
+      "nodes": ["A", "B"],
+      "edges": [{"a": "A", "b": "B", "weight": 1}]
+    }
+  ]
+}

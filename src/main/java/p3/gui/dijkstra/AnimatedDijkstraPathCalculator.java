@@ -55,7 +55,8 @@ public class AnimatedDijkstraPathCalculator<N> extends DijkstraPathCalculator<N>
     }
 
     public String getDistance(N node) {
-        return Objects.toString(distances.get(node));
+        Integer distance = distances.get(node);
+        return distance == Integer.MAX_VALUE ? "Infinity" : Objects.toString(distance);
     }
 
     public String getPredecessor(N node) {

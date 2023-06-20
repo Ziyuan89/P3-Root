@@ -91,10 +91,6 @@ public class BasicMutableGraph<N> implements MutableGraph<N> {
         final Edge<N> edge = Edge.of(a, b, weight);
         edgesA.add(edge);
         edgesB.add(edge);
-
-        backing.put(a, edgesA);
-        backing.put(b, edgesB);
-
         edges.add(edge);
 
         return this;

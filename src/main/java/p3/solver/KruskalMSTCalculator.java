@@ -13,6 +13,7 @@ import java.util.Set;
  */
 public class KruskalMSTCalculator<N> implements MSTCalculator<N> {
 
+    // BEGIN DO NOT MODIFY
     public static MSTCalculator.Factory FACTORY = KruskalMSTCalculator::new;
 
     protected final Graph<N> graph;
@@ -24,6 +25,7 @@ public class KruskalMSTCalculator<N> implements MSTCalculator<N> {
         this.mstEdges = new HashSet<>();
         this.mstGroups = new ArrayList<>();
     }
+    // END DO NOT MODIFY
 
     @Override
     public Graph<N> calculateMST() {
@@ -86,7 +88,7 @@ public class KruskalMSTCalculator<N> implements MSTCalculator<N> {
             return false;
         }
 
-        joinSets(aIndex, bIndex);
+        joinGroups(aIndex, bIndex);
 
         return true;
     }
@@ -99,7 +101,7 @@ public class KruskalMSTCalculator<N> implements MSTCalculator<N> {
      * @param aIndex The index of the first set to join.
      * @param bIndex The index of the second set to join.
      */
-    protected void joinSets(int aIndex, int bIndex) {
+    protected void joinGroups(int aIndex, int bIndex) {
         if (mstGroups.get(aIndex).size() < mstGroups.get(bIndex).size()) {
             mstGroups.get(aIndex).addAll(mstGroups.get(bIndex));
             mstGroups.remove(bIndex);

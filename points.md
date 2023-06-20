@@ -17,10 +17,10 @@ b) AdjacencyMatrix & -Graph 6 Punkte
 
 # 2 Kruskal - 10 Punkte
 
-- Graph.Edge.compareTo korrekt
+- Edge.compareTo korrekt
 - init korrekt
-- Sets beinhalten die korrekten Werte nach joinSets
-- joinSets fügt Werte in das größere Set hinzu (vollständig korrekt)
+- Groups beinhalten die korrekten Werte nach joinGroups
+- joinGroups fügt Werte in das größere Set hinzu (vollständig korrekt)
 - acceptEdge korrekt wenn beide Werte in erstem Set
 - acceptEdge korrekt wenn ein Werte in erstem Set
 - acceptEdge korrekt wenn nicht gejoint wurde
