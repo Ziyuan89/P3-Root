@@ -9,6 +9,13 @@ import javafx.application.Platform;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * A Kruskal MST calculator that animates the calculation.
+ * <p>
+ *     It stops every time after the init or acceptEdge method is called.
+ * </p>
+ * @param <N> the type of the nodes.
+ */
 public class AnimatedKruskalMSTCalculator<N> extends KruskalMSTCalculator<N> implements Animation {
 
     private static final Object syncObject = new Object();

@@ -14,17 +14,39 @@ import java.util.Set;
 /**
  * Implementation of Dijkstra's algorithm, a single-source shortest path algorithm.
  *
- * @param <N> node identifier
+ * @param <N> The type of the nodes in the graph.
  */
 public class DijkstraPathCalculator<N> implements PathCalculator<N> {
 
+    /**
+     * Factory for creating new instances of {@link DijkstraPathCalculator}.
+     */
     public static PathCalculator.Factory FACTORY = DijkstraPathCalculator::new;
 
+    /**
+     * Tje graph to calculate paths in.
+     */
     protected final Graph<N> graph;
+
+    /**
+     * The distance from the start node to each node in the graph.
+     */
     protected final Map<N, Integer> distances = new HashMap<>();
+
+    /**
+     * The predecessor of each node in the graph along the shortest path to the start node.
+     */
     protected final Map<N, N> predecessors = new HashMap<>();
+
+    /**
+     * The set of nodes that have not yet been visited.
+     */
     protected final Set<N> remainingNodes = new HashSet<>();
 
+    /**
+     * Construct a new {@link DijkstraPathCalculator} for the given graph.
+     * @param graph the graph to calculate paths in.
+     */
     public DijkstraPathCalculator(Graph<N> graph) {
         this.graph = graph;
     }
@@ -34,9 +56,7 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
      *
      * <p>
      * This method calculates the shortest path from {@code start} to all other nodes and saves the results
-     * to {@link #distances} and {@link #predecessors}. All subsequent calls to this method with the <i>same</i>
-     * start node will use the cached results instead of recalculating. Only when a subsequent call uses a
-     * different start node, the algorithm is run again and those results are cached.
+     * to {@link #distances} and {@link #predecessors}.
      * </p>
      *
      * @param start the start node, first node in the returned list
@@ -63,8 +83,9 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
     }
 
     /**
-     * Initializes the {@link #distances} and {@link #predecessors} maps, i.e., resets and repopulates them with
-     * default values.
+     * Initializes the {@link #distances} and {@link #predecessors} maps as well as the {@link #remainingNodes} set, i.e., resets and repopulates them with
+     * default values. The default value for {@link #distances} is {@code 0} for the start node and {@link Integer#MAX_VALUE} for every other node
+     * and the default value for {@link #predecessors} is {@code null} for every node.
      *
      * @param start the start node
      */
@@ -84,7 +105,8 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
     }
 
     /**
-     * Select the next node from the set of remaining nodes.
+     * Determines the next node from the set of remaining nodes that should be visited.
+     * <p> This implementation returns the node with the minimal weight in the {@link #remainingNodes} set.
      *
      * @return the next unprocessed node with minimal weight
      */
@@ -98,8 +120,8 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
     }
 
     /**
-     * Update the {@link #distances} and {@link #predecessors} maps if a shorter path between {@code from} and
-     * {@code to} is found.
+     * Updates the {@link #distances} and {@link #predecessors} maps if a shorter path between {@code from} and
+     * {@code to} is found. If no shorter path is found, the maps remain unchanged.
      *
      * @param from the node that is used to reach {@code to}
      * @param to   the target node for this update
@@ -114,15 +136,16 @@ public class DijkstraPathCalculator<N> implements PathCalculator<N> {
     }
 
     /**
-     * Reconstruct the shortest path from {@code start} to {@code target}.
+     * Reconstructs the shortest path from {@code start} to {@code end} by using the {@link #predecessors} map.
+     * <p> The returned path contains {@code start} as the first element and {@code end} as the last element.
      *
      * @param start  the start node
-     * @param target the target node
-     * @return a list of nodes in the order they need to be traversed to get the shortest path between the two nodes
+     * @param end the end node
+     * @return a list of nodes in the order they need to be traversed to get the shortest path from the start node to the end node.
      */
-    protected List<N> reconstructPath(N start, N target) {
+    protected List<N> reconstructPath(N start, N end) {
         LinkedList<N> shortestPath = new LinkedList<>();
-        N current = target;
+        N current = end;
         while (!current.equals(start)) {
             shortestPath.addFirst(current);
             current = predecessors.get(current);

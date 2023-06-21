@@ -2,6 +2,13 @@ package p3.graph;
 
 import java.util.Objects;
 
+/**
+ * A basic implementation of an {@link Edge}.
+ * @param a The first node in the edge.
+ * @param b The second node in the edge.
+ * @param weight The weight of the edge.
+ * @param <N> The type of the nodes in the graph.
+ */
 record EdgeImpl<N>(N a, N b, int weight) implements Edge<N> {
 
     @Override

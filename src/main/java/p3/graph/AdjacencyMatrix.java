@@ -5,14 +5,21 @@ package p3.graph;
  *
  * <p>Invariants:</p>
  * <ul>
- *     <li><code>matrix.length == matrix[0].length</code></li>
- *     <li><code>matrix[i][j] == matrix[j][i]</code></li>
+ *     <li><code>matrix.length == matrix[0].length</code> (square matrix)</li>
+ *     <li><code>matrix[i][j] == matrix[j][i]</code> (symmetric matrix)</li>
  * </ul>
  */
 public class AdjacencyMatrix {
 
+    /**
+     * The underlying array that stores the adjacency matrix.
+     */
     final int[][] matrix;
 
+    /**
+     * Constructs a new adjacency matrix with the given size.
+     * @param size the size of the matrix.
+     */
     public AdjacencyMatrix(int size) {
         matrix = new int[size][size];
     }

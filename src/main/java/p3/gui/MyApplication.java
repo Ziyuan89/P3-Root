@@ -9,6 +9,9 @@ import javafx.stage.Stage;
 
 import java.util.Map;
 
+/**
+ * Main entry point in executing the GUI.
+ */
 public class MyApplication extends Application {
 
     @Override
@@ -22,6 +25,10 @@ public class MyApplication extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Creates a scene to visualize Dijkstra's algorithm.
+     * @return a scene to visualize Dijkstra's algorithm.
+     */
     private static AnimationScene createDijkstraScene() {
         Graph<String> graph = createGraph();
 
@@ -37,6 +44,10 @@ public class MyApplication extends Application {
         return scene;
     }
 
+    /**
+     * Creates a scene to visualize Kruskal's algorithm.
+     * @return a scene to visualize Kruskal's algorithm.
+     */
     private static AnimationScene createKruskalScene() {
         Graph<String> graph = createGraph();
 
@@ -51,6 +62,10 @@ public class MyApplication extends Application {
         return scene;
     }
 
+    /**
+     * Creates the graph to visualize.
+     * @return the graph to visualize.
+     */
     private static Graph<String> createGraph() {
         return MutableGraph.<String>of()
             .putEdgesAndNodes("A", "B", 4)

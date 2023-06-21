@@ -15,6 +15,11 @@ import java.util.Objects;
 
 import static p3.gui.GraphStyle.*;
 
+/**
+ * A scene for displaying the Dijkstra algorithm.
+ *
+ * @param <N> the type of the nodes
+ */
 public class DijkstraScene<N> extends AnimationScene {
 
     private final BorderPane root;

@@ -10,6 +10,10 @@ import javafx.scene.layout.VBox;
 
 import java.util.List;
 
+/**
+ * A pane for displaying information about the Dijkstra algorithm.
+ * @param <N> the type of the nodes.
+ */
 public class DijkstraInfoPane<N> extends Pane {
 
     private ObservableList<N> nodes;

@@ -12,6 +12,10 @@ import javafx.scene.layout.Pane;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * A pane for displaying information about the Kruskal algorithm.
+ * @param <N> the type of the nodes.
+ */
 public class KruskalInfoPane<N> extends Pane {
 
     private ObservableList<N> nodes;

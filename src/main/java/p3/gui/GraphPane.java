@@ -20,6 +20,11 @@ import java.util.stream.Collector;
 
 import static p3.gui.GraphStyle.*;
 
+/**
+ * A {@link Pane} that displays a {@link Graph}.
+ *
+ * @param <N> the type of the nodes in the graph
+ */
 @SuppressWarnings("unused")
 public class GraphPane<N> extends Pane {
 
@@ -48,6 +53,12 @@ public class GraphPane<N> extends Pane {
         this(List.of(), List.of());
     }
 
+    /**
+     * Creates a new {@link GraphPane} and displays the given {@link Graph}.
+     * The nodes are displayed at the given locations.
+     * @param graph the {@link Graph} to display.
+     * @param nodeLocations the locations of the nodes in the graph.
+     */
     public GraphPane(Graph<N> graph, Map<N, Location> nodeLocations) {
         this(graph.getNodes().stream().map(node -> new LocationNode<>(node, nodeLocations.get(node))).toList(),
             graph.getEdges().stream().map(edge -> Edge.of(

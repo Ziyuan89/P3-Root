@@ -14,6 +14,11 @@ import java.util.Map;
 
 import static p3.gui.GraphStyle.*;
 
+/**
+ * A scene for displaying the Kruskal algorithm.
+ *
+ * @param <N> the type of the nodes
+ */
 public class KruskalScene<N> extends AnimationScene {
 
     private final BorderPane root;

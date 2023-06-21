@@ -1,9 +1,21 @@
 package p3.graph;
 
+/**
+ * An undirected edge in a {@link Graph}.
+ * @param <N> the type of the nodes in the graph.
+ */
 public interface Edge<N> extends Comparable<Edge<N>> {
 
+    /**
+     * The first node that this edge connects.
+     * @return The first node that this edge connects.
+     */
     N a();
 
+    /**
+     * The second node that this edge connects.
+     * @return The second node that this edge connects.
+     */
     N b();
 
     /**
@@ -18,17 +30,16 @@ public interface Edge<N> extends Comparable<Edge<N>> {
     int weight();
 
     /**
-     * Two edges are equal if they have the same nodes and weight.
+     * Two edges are equal if they have the same nodes.
      *
      * <p>More precisely, two edges <code>x</code> and <code>y</code> are equal iff:</p>
      * <ul>
      *     <li><code>Objects.equals(x.getA(), y.getA())</code></li>
      *     <li><code>Objects.equals(x.getB(), y.getB())</code></li>
-     *     <li><code>x.getWeight() == y.getWeight()</code></li>
      * </ul>
      *
      * @param other the other edge
-     * @return true if the edges are equal
+     * @return true if the edges are equal, false otherwise
      */
     boolean equals(Object other);
 
@@ -43,6 +54,14 @@ public interface Edge<N> extends Comparable<Edge<N>> {
         return Integer.compare(weight(), other.weight());
     }
 
+    /**
+     * Creates a new edge with the given nodes and weight.
+     * @param a the first node
+     * @param b the second node
+     * @param weight the weight of the edge
+     * @return a new edge with the given nodes and weight
+     * @param <N> the type of the nodes in the graph
+     */
     static <N> Edge<N> of(N a, N b, int weight) {
         return new EdgeImpl<>(a, b, weight);
     }

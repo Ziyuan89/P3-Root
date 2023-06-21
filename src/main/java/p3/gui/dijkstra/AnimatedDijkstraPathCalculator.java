@@ -8,6 +8,13 @@ import javafx.application.Platform;
 
 import java.util.*;
 
+/**
+ * A Dijkstra path calculator that animates the calculation.
+ * <p>
+ *     It stops every time after the init or relax method is called.
+ * </p>
+ * @param <N> the type of the nodes.
+ */
 public class AnimatedDijkstraPathCalculator<N> extends DijkstraPathCalculator<N> implements Animation {
 
     private static final Object syncObject = new Object();
