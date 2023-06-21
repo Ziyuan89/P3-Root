@@ -7,12 +7,40 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * A basic implementation of an immutable {@link Graph} that uses a {@link Map} to store the edges that are adjacent to each node.
+ * @param <N>
+ */
 public class BasicGraph<N> implements Graph<N> {
 
-    private final Map<N, Set<Edge<N>>> backing;
-    private final Set<N> nodes;
-    private final Set<Edge<N>> edges;
+    /**
+     * A map from nodes to the edges that are adjacent to them.
+     * If a node has no adjacent edges, it is mapped to an empty set.
+     */
+    protected final Map<N, Set<Edge<N>>> backing;
 
+    /**
+     * The nodes in this graph.
+     */
+    protected final Set<N> nodes;
+
+    /**
+     * The edges in this graph.
+     */
+    protected final Set<Edge<N>> edges;
+
+    /**
+     * Constructs a new empty {@link BasicGraph}.
+     */
+    public BasicGraph() {
+        this(Set.of(), Set.of());
+    }
+
+    /**
+     * Constructs a new {@link BasicGraph} with the given nodes and edges.
+     * @param nodes the nodes.
+     * @param edges the edges.
+     */
     public BasicGraph(Set<N> nodes, Set<Edge<N>> edges) {
         backing = nodes.stream()
             .map(n -> Map.entry(n, edges.stream()
@@ -52,5 +80,8 @@ public class BasicGraph<N> implements Graph<N> {
         return this;
     }
 
+    /**
+     * An empty immutable {@link Graph}.
+     */
     static Graph<Object> EMPTY = new BasicGraph<>(Set.of(), Set.of());
 }

@@ -5,62 +5,58 @@ import p3.SetUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BasicMutableGraph<N> implements MutableGraph<N> {
+public class BasicMutableGraph<N> extends BasicGraph<N> implements MutableGraph<N> {
 
-    private final Map<N, Set<Edge<N>>> backing;
-    private final Set<N> nodes;
-    private final Set<Edge<N>> edges;
+    /**
+     * The nodes in this graph.
+     * This is used instead of the fields in {@link BasicGraph} to allow for mutation.
+     */
+    private final Set<N> mutableNodes = new HashSet<>();
 
+    /**
+     * The edges in this graph.
+     * This is used instead of the fields in {@link BasicGraph} to allow for mutation.
+     */
+    private final Set<Edge<N>> mutableEdges = new HashSet<>();
+
+    /**
+     * Constructs a new empty {@link BasicMutableGraph}.
+     */
     public BasicMutableGraph() {
-        backing = new HashMap<>();
-        nodes = new HashSet<>();
-        edges = new HashSet<>();
+        this(Set.of(), Set.of());
     }
 
     public BasicMutableGraph(Set<N> nodes, Set<Edge<N>> edges) {
-        backing = nodes.stream()
-            .map(n -> Map.entry(n, edges.stream()
-                .filter(e -> Objects.equals(e.a(), n) || Objects.equals(e.b(), n))
-                .collect(Collectors.toCollection(HashSet::new))))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        this.nodes = SetUtils.mutableCopyOf(nodes);
-        this.edges = SetUtils.mutableCopyOf(edges);
+        super(nodes, edges);
+        mutableNodes.addAll(nodes);
+        mutableEdges.addAll(edges);
     }
 
     @Override
     public Set<N> getNodes() {
-        return nodes;
+        return mutableNodes;
     }
 
     @Override
     public Set<Edge<N>> getEdges() {
-        return edges;
-    }
-
-    @Override
-    public Set<Edge<N>> getAdjacentEdges(N node) {
-        Set<Edge<N>> result = backing.get(node);
-        if (result == null) {
-            throw new IllegalArgumentException("Node not found: " + node);
-        }
-        return result;
+        return mutableEdges;
     }
 
     @Override
     public MutableGraph<N> toMutableGraph() {
-        return MutableGraph.of(nodes, edges);
+        return MutableGraph.of(mutableNodes, mutableEdges);
     }
 
     @Override
     public Graph<N> toGraph() {
-        return Graph.of(nodes, edges);
+        return Graph.of(mutableNodes, mutableEdges);
     }
 
     @Override
     public MutableGraph<N> putNode(N node) {
         if (!backing.containsKey(node)) {
             backing.put(node, new HashSet<>());
-            nodes.add(node);
+            mutableNodes.add(node);
         }
         return this;
     }
@@ -76,14 +72,14 @@ public class BasicMutableGraph<N> implements MutableGraph<N> {
         final Edge<N> edge = Edge.of(a, b, weight);
         edgesA.add(edge);
         edgesB.add(edge);
-        edges.add(edge);
+        mutableEdges.add(edge);
         return this;
     }
 
     @Override
     public MutableGraph<N> putEdgesAndNodes(N a, N b, int weight) {
-        nodes.add(a);
-        nodes.add(b);
+        mutableNodes.add(a);
+        mutableNodes.add(b);
 
         final Set<Edge<N>> edgesA = backing.computeIfAbsent(a, k -> new HashSet<>());
         final Set<Edge<N>> edgesB = backing.computeIfAbsent(b, k -> new HashSet<>());
@@ -91,7 +87,7 @@ public class BasicMutableGraph<N> implements MutableGraph<N> {
         final Edge<N> edge = Edge.of(a, b, weight);
         edgesA.add(edge);
         edgesB.add(edge);
-        edges.add(edge);
+        mutableEdges.add(edge);
 
         return this;
     }
