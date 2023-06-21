@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
+import static p3.util.Utils.getFieldValue;
 
 @TestForSubmission
 public class BasicGraphTests {
@@ -140,15 +141,6 @@ public class BasicGraphTests {
                     .filter(edge -> !expectedMappedEdges.contains(edge))
                     .map(Object::toString)
                     .collect(Collectors.joining(", ", "[", "]")));
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T> T getFieldValue(Field field, Object instance) {
-        try {
-            return (T) field.get(instance);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
         }
     }
 
