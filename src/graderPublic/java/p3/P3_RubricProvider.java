@@ -1,8 +1,15 @@
 package p3;
 
 import org.sourcegrade.jagr.api.rubric.*;
+import org.sourcegrade.jagr.api.testing.RubricConfiguration;
+import p3.graph.AdjacencyGraphTests;
+import p3.graph.AdjacencyMatrixTests;
 import p3.graph.BasicGraphTests;
+import p3.transform.ClassTransformerTemplate;
+import p3.transform.Transformers;
+import p3.util.SerializedEdge;
 
+import java.util.List;
 import java.util.Set;
 
 public class P3_RubricProvider implements RubricProvider {
@@ -24,27 +31,35 @@ public class P3_RubricProvider implements RubricProvider {
         .addChildCriteria(H1_1_1, H1_1_2, H1_1_3)
         .build();
 
-    private static final Criterion H1_2_1 = makeUngradedCriterion(
-        "[[[addEdge]]] funktioniert korrekt."
+    private static final Criterion H1_2_1 = makeCriterion(
+        "[[[addEdge]]] funktioniert korrekt.",
+        JUnitTestRef.ofMethod(() -> AdjacencyMatrixTests.class.getDeclaredMethod("testAddEdge", int.class, SerializedEdge.class))
     );
-    private static final Criterion H1_2_2 = makeUngradedCriterion(
-        "[[[getWeight]]] funktioniert korrekt."
+    private static final Criterion H1_2_2 = makeCriterion(
+        "[[[getWeight]]] funktioniert korrekt.",
+        JUnitTestRef.ofMethod(() -> AdjacencyMatrixTests.class.getDeclaredMethod("testGetWeight", int.class, SerializedEdge.class))
     );
-    private static final Criterion H1_2_3 = makeUngradedCriterion(
-        "[[[getAdjacent]]] funktioniert korrekt."
+    private static final Criterion H1_2_3 = makeCriterion(
+        "[[[getAdjacent]]] funktioniert korrekt.",
+        JUnitTestRef.ofMethod(() -> AdjacencyMatrixTests.class.getDeclaredMethod("testGetAdjacent", int.class, List.class))
     );
-    private static final Criterion H1_2_4 = makeUngradedCriterion(
-        "[[[getAdjacentEdges]]] funktioniert korrekt, wenn alle Kanten mit mehr als 0 gewichtet sind."
+    private static final Criterion H1_2_4 = makeCriterion(
+        "[[[nodeIndices]]] und [[[indexNodes]]] werden im Konstruktor von [[[AdjacencyGraph]]] korrekt gesetzt.",
+        JUnitTestRef.ofMethod(() -> AdjacencyGraphTests.class.getDeclaredMethod("testConstructorMaps", Set.class, Set.class))
     );
-    private static final Criterion H1_2_5 = makeUngradedCriterion(
-        "[[[getAdjacentEdges]]] funktioniert vollständig korrekt."
+    private static final Criterion H1_2_5 = makeCriterion(
+        "[[[edges]]] wird im Konstruktor von [[[AdjacencyGraph]]] korrekt gesetzt.",
+        JUnitTestRef.ofMethod(() -> AdjacencyGraphTests.class.getDeclaredMethod("testConstructorEdges", Set.class, Set.class))
     );
-    private static final Criterion H1_2_6 = makeUngradedCriterion(
-        "[[[maps]]] wird im Konstruktor von [[[AdjacencyGraph]]] korrekt gesetzt."
+    private static final Criterion H1_2_6 = makeCriterion(
+        "[[[getAdjacentEdges]]] funktioniert korrekt, wenn alle Kanten mit mehr als 0 gewichtet sind.",
+        JUnitTestRef.ofMethod(() -> AdjacencyGraphTests.class.getDeclaredMethod("testGetAdjacentEdgesPositiveWeight", Set.class, Set.class))
     );
-    private static final Criterion H1_2_7 = makeUngradedCriterion(
-        "[[[edges]]] wird im Konstruktor von [[[AdjacencyGraph]]] korrekt gesetzt."
+    private static final Criterion H1_2_7 = makeCriterion(
+        "[[[getAdjacentEdges]]] funktioniert vollständig korrekt.",
+        JUnitTestRef.ofMethod(() -> AdjacencyGraphTests.class.getDeclaredMethod("testGetAdjacentEdgesWithZeroWeights", Set.class, Set.class))
     );
+
     private static final Criterion H1_2 = Criterion.builder()
         .shortDescription("AdjacencyMatrix und AdjacencyGraph")
         .addChildCriteria(H1_2_1, H1_2_2, H1_2_3, H1_2_4, H1_2_5, H1_2_6, H1_2_7)
@@ -127,6 +142,13 @@ public class P3_RubricProvider implements RubricProvider {
     @Override
     public Rubric getRubric() {
         return RUBRIC;
+    }
+
+    @Override
+    public void configure(RubricConfiguration configuration) {
+        RubricProvider.super.configure(configuration);
+        configuration.addTransformer(new ClassTransformerTemplate("AdjacencyGraphConstructorTransformer",
+            Transformers.ADJACENCY_GRAPH_CONSTRUCTOR_TRANSFORMER));
     }
 
     private static Criterion makeCriterion(String description, JUnitTestRef... jUnitTestRefs) {
