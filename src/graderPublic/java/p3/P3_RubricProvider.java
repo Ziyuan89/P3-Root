@@ -5,9 +5,12 @@ import org.sourcegrade.jagr.api.testing.RubricConfiguration;
 import p3.graph.AdjacencyGraphTests;
 import p3.graph.AdjacencyMatrixTests;
 import p3.graph.BasicGraphTests;
+import p3.graph.EdgeTests;
+import p3.solver.KruskalMSTCalculatorTests;
 import p3.transform.ClassTransformerTemplate;
 import p3.transform.Transformers;
 import p3.util.SerializedEdge;
+import p3.util.SerializedGraph;
 
 import java.util.List;
 import java.util.Set;
@@ -70,11 +73,13 @@ public class P3_RubricProvider implements RubricProvider {
         .addChildCriteria(H1_1, H1_2)
         .build();
 
-    private static final Criterion H2_1 = makeUngradedCriterion(
-        "[[[Edge.compareTo]]] funktioniert korrekt."
+    private static final Criterion H2_1 = makeCriterion(
+        "[[[Edge.compareTo]]] funktioniert korrekt.",
+        JUnitTestRef.ofMethod(() -> EdgeTests.class.getDeclaredMethod("testCompareTo", SerializedEdge.class, SerializedEdge.class, int.class))
     );
-    private static final Criterion H2_2 = makeUngradedCriterion(
-        "[[[init]]] funktioniert korrekt."
+    private static final Criterion H2_2 = makeCriterion(
+        "[[[init]]] funktioniert korrekt.",
+        JUnitTestRef.ofMethod(() -> KruskalMSTCalculatorTests.class.getDeclaredMethod("testInit", SerializedGraph.class))
     );
     private static final Criterion H2_3 = makeUngradedCriterion(
         "Alle Gruppen beinhalten die korrekten Werte nach Aufruf von [[[joinGroups]]]."
