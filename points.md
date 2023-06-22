@@ -1,18 +1,18 @@
 # 1 Graphenrepräsentation - 10 Punkte
 
-a) BasicGraph Konsturktor 3 Punkte
+a) BasicGraph Konstruktor 3 Punkte
 - korrekt mit 2 nodes
 - korrekt mit 3 nodes
 - korrekt mit >3 nodes
 
-b) AdjacencyMatrix & -Graph 6 Punkte
+b) AdjacencyMatrix & -Graph 7 Punkte
 - addEdge korrekt
 - getWeight korrekt
 - getAdjacent korrekt
-- getAdjacentsEdges korrekt wenn alle edges weights > 0 haben
-- getAdjacentsEdges vollständig korrekt
 - maps in adjacencyGraph Konstruktor korrekt
 - edges korrekt in Konstruktor hinzugefügt
+- getAdjacentEdges korrekt wenn alle edges weights > 0 haben
+- getAdjacentEdges vollständig korrekt
 
 
 # 2 Kruskal - 10 Punkte
