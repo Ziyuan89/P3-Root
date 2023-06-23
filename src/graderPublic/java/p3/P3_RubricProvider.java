@@ -6,6 +6,7 @@ import p3.graph.AdjacencyGraphTests;
 import p3.graph.AdjacencyMatrixTests;
 import p3.graph.BasicGraphTests;
 import p3.graph.EdgeTests;
+import p3.solver.DijkstraPathCalculatorTests;
 import p3.solver.KruskalMSTCalculatorTests;
 import p3.transform.ClassTransformerTemplate;
 import p3.transform.Transformers;
@@ -110,14 +111,17 @@ public class P3_RubricProvider implements RubricProvider {
         .addChildCriteria(H2_1, H2_2, H2_3, H2_4, H2_5, H2_6, H2_7, H2_8, H2_9, H2_10)
         .build();
 
-    private static final Criterion H3_1 = makeUngradedCriterion(
-        "Methode [[[init]]] funktioniert vollständig korrekt."
+    private static final Criterion H3_1 = makeCriterion(
+        "Methode [[[init]]] funktioniert vollständig korrekt.",
+        JUnitTestRef.ofMethod(() -> DijkstraPathCalculatorTests.class.getDeclaredMethod("testInit", SerializedGraph.class, Object.class))
     );
-    private static final Criterion H3_2 = makeUngradedCriterion(
-        "[[[extractMin]]] funktioniert korrekt, wenn alle Knoten in [[[remainingNodes]]] sind."
+    private static final Criterion H3_2 = makeCriterion(
+        "[[[extractMin]]] funktioniert korrekt, wenn alle Knoten in [[[remainingNodes]]] sind.",
+        JUnitTestRef.ofMethod(() -> DijkstraPathCalculatorTests.class.getDeclaredMethod("testExtractMinSimple", SerializedGraph.class, List.class, Object.class))
     );
-    private static final Criterion H3_3 = makeUngradedCriterion(
-        "[[[extractMin]]] funktioniert vollständig korrekt."
+    private static final Criterion H3_3 = makeCriterion(
+        "[[[extractMin]]] funktioniert vollständig korrekt.",
+        JUnitTestRef.ofMethod(() -> DijkstraPathCalculatorTests.class.getDeclaredMethod("testExtractMinFull", SerializedGraph.class, List.class, Set.class, Object.class))
     );
     private static final Criterion H3_4 = makeUngradedCriterion(
         "[[[relax]]] funktioniert korrekt."

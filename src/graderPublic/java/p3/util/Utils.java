@@ -12,4 +12,14 @@ public class Utils {
             throw new RuntimeException(e);
         }
     }
+
+    public static <T> T setFieldValue(Field field, Object instance, T value) {
+        try {
+            T oldValue = getFieldValue(field, instance);
+            field.set(instance, value);
+            return oldValue;
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
