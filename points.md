@@ -28,12 +28,13 @@ b) AdjacencyMatrix & -Graph 7 Punkte
 - createMSt ruft acceptEdge für alle edges auf
 - createMST vollständig korrekt (sortiert, mstEdges)
 
-# 3 Dijkstra - 9 Punkte
+# 3 Dijkstra - 10 Punkte
 
 - init korrekt
-- extractMin korrekt wenn remainingNode alle nodes beinhaltet
+- extractMin korrekt, wenn remainingNode alle nodes beinhaltet
 - extractMin vollständig korrekt
-- relax korrekt (nur relax aufrufen wenn edge noch nicht besucht?
+- relax passt distances korrekt an
+- relax passt predecessors korrekt an
 - reconstructPath korrekt (2 Punkte)
 - calculatePath korrekt für Graph mit 2 Nodes
 - calculatePath korrekt für Graph mit 3 Nodes

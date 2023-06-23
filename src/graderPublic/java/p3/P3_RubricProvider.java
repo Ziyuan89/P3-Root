@@ -18,129 +18,183 @@ import java.util.Set;
 
 public class P3_RubricProvider implements RubricProvider {
 
-    private static final Criterion H1_1_1 = makeCriterion(
+    private static final Criterion H1_A_1 = makeCriterion(
         "Der Konstruktor von [[[BasicGraph]]] funktioniert korrekt für Graphen mit 2 Knoten.",
         JUnitTestRef.ofMethod(() -> BasicGraphTests.class.getDeclaredMethod("testTwoNodes", Set.class, Set.class))
     );
-    private static final Criterion H1_1_2 = makeCriterion(
+    private static final Criterion H1_A_2 = makeCriterion(
         "Der Konstruktor von [[[BasicGraph]]] funktioniert korrekt für Graphen mit 3 Knoten.",
         JUnitTestRef.ofMethod(() -> BasicGraphTests.class.getDeclaredMethod("testThreeNodes", Set.class, Set.class))
     );
-    private static final Criterion H1_1_3 = makeCriterion(
+    private static final Criterion H1_A_3 = makeCriterion(
         "Der Konstruktor von [[[BasicGraph]]] funktioniert korrekt für Graphen mit mehr als 3 Knoten.",
         JUnitTestRef.ofMethod(() -> BasicGraphTests.class.getDeclaredMethod("testMultipleNodes", Set.class, Set.class))
     );
-    private static final Criterion H1_1 = Criterion.builder()
-        .shortDescription("BasicGraph Konstruktor")
-        .addChildCriteria(H1_1_1, H1_1_2, H1_1_3)
+    private static final Criterion H1_A = Criterion.builder()
+        .shortDescription("H1 a) BasicGraph")
+        .addChildCriteria(H1_A_1, H1_A_2, H1_A_3)
         .build();
 
-    private static final Criterion H1_2_1 = makeCriterion(
+    private static final Criterion H1_B_1 = makeCriterion(
         "[[[addEdge]]] funktioniert korrekt.",
         JUnitTestRef.ofMethod(() -> AdjacencyMatrixTests.class.getDeclaredMethod("testAddEdge", int.class, SerializedEdge.class))
     );
-    private static final Criterion H1_2_2 = makeCriterion(
+    private static final Criterion H1_B_2 = makeCriterion(
         "[[[getWeight]]] funktioniert korrekt.",
         JUnitTestRef.ofMethod(() -> AdjacencyMatrixTests.class.getDeclaredMethod("testGetWeight", int.class, SerializedEdge.class))
     );
-    private static final Criterion H1_2_3 = makeCriterion(
+    private static final Criterion H1_B_3 = makeCriterion(
         "[[[getAdjacent]]] funktioniert korrekt.",
         JUnitTestRef.ofMethod(() -> AdjacencyMatrixTests.class.getDeclaredMethod("testGetAdjacent", int.class, List.class))
     );
-    private static final Criterion H1_2_4 = makeCriterion(
+    private static final Criterion H1_B = Criterion.builder()
+        .shortDescription("H1 b) AdjacencyMatrix")
+        .addChildCriteria(H1_B_1, H1_B_2, H1_B_3)
+        .build();
+
+    private static final Criterion H1_C_1 = makeCriterion(
         "[[[nodeIndices]]] und [[[indexNodes]]] werden im Konstruktor von [[[AdjacencyGraph]]] korrekt gesetzt.",
         JUnitTestRef.ofMethod(() -> AdjacencyGraphTests.class.getDeclaredMethod("testConstructorMaps", Set.class, Set.class))
     );
-    private static final Criterion H1_2_5 = makeCriterion(
+    private static final Criterion H1_C_2 = makeCriterion(
         "[[[edges]]] wird im Konstruktor von [[[AdjacencyGraph]]] korrekt gesetzt.",
         JUnitTestRef.ofMethod(() -> AdjacencyGraphTests.class.getDeclaredMethod("testConstructorEdges", Set.class, Set.class))
     );
-    private static final Criterion H1_2_6 = makeCriterion(
+    private static final Criterion H1_C_3 = makeCriterion(
         "[[[getAdjacentEdges]]] funktioniert korrekt, wenn alle Kanten mit mehr als 0 gewichtet sind.",
         JUnitTestRef.ofMethod(() -> AdjacencyGraphTests.class.getDeclaredMethod("testGetAdjacentEdgesPositiveWeight", Set.class, Set.class))
     );
-    private static final Criterion H1_2_7 = makeCriterion(
+    private static final Criterion H1_C_4 = makeCriterion(
         "[[[getAdjacentEdges]]] funktioniert vollständig korrekt.",
         JUnitTestRef.ofMethod(() -> AdjacencyGraphTests.class.getDeclaredMethod("testGetAdjacentEdgesWithZeroWeights", Set.class, Set.class))
     );
 
-    private static final Criterion H1_2 = Criterion.builder()
-        .shortDescription("AdjacencyMatrix und AdjacencyGraph")
-        .addChildCriteria(H1_2_1, H1_2_2, H1_2_3, H1_2_4, H1_2_5, H1_2_6, H1_2_7)
+    private static final Criterion H1_C = Criterion.builder()
+        .shortDescription("H1 c) AdjacencyGraph")
+        .addChildCriteria(H1_C_1, H1_C_2, H1_C_3, H1_C_4)
         .build();
 
     private static final Criterion H1 = Criterion.builder()
-        .shortDescription("Datenstrukturen für Graphen")
-        .addChildCriteria(H1_1, H1_2)
+        .shortDescription("H1: Graphenrepräsentation")
+        .addChildCriteria(H1_A, H1_B, H1_C)
         .build();
 
-    private static final Criterion H2_1 = makeCriterion(
-        "[[[Edge.compareTo]]] funktioniert korrekt.",
-        JUnitTestRef.ofMethod(() -> EdgeTests.class.getDeclaredMethod("testCompareTo", SerializedEdge.class, SerializedEdge.class, int.class))
-    );
-    private static final Criterion H2_2 = makeCriterion(
-        "[[[init]]] funktioniert korrekt.",
-        JUnitTestRef.ofMethod(() -> KruskalMSTCalculatorTests.class.getDeclaredMethod("testInit", SerializedGraph.class))
-    );
-    private static final Criterion H2_3 = makeUngradedCriterion(
+    private static final Criterion H2_A = Criterion.builder()
+        .shortDescription("H2 a) [[[Edge.compareTo]]]")
+        .addChildCriteria(makeCriterion(
+            "[[[Edge.compareTo]]] funktioniert korrekt.",
+            JUnitTestRef.ofMethod(() -> EdgeTests.class.getDeclaredMethod("testCompareTo", SerializedEdge.class, SerializedEdge.class, int.class))
+        ))
+        .build();
+
+    private static final Criterion H2_B = Criterion.builder()
+        .shortDescription("H2 b) [[[init]]]")
+        .addChildCriteria(makeCriterion(
+            "[[[init]]] funktioniert korrekt.",
+            JUnitTestRef.ofMethod(() -> KruskalMSTCalculatorTests.class.getDeclaredMethod("testInit", SerializedGraph.class))
+        ))
+        .build();
+
+    private static final Criterion H2_C_1 = makeUngradedCriterion(
         "Alle Gruppen beinhalten die korrekten Werte nach Aufruf von [[[joinGroups]]]."
     );
-    private static final Criterion H2_4 = makeUngradedCriterion(
+    private static final Criterion H2_C_2 = makeUngradedCriterion(
         "[[[joinGroups]]] fügt die Werte in die größere der beiden Mengen ein."
     );
-    private static final Criterion H2_5 = makeUngradedCriterion(
-        "[[[acceptEdge]]] funktioniert korrekt, wenn beide Knoten in einer Menge sind."
-    );
-    private static final Criterion H2_6 = makeUngradedCriterion(
-        "[[[acceptEdge]]] funktioniert korrekt, wenn beide Knoten in unterschiedlichen Mengen sind."
-    );
-    private static final Criterion H2_7 = makeUngradedCriterion(
-        "[[[acceptEdge]]] ruft [[[joinGroups]]] an der richtigen Stelle auf."
-    );
-    private static final Criterion H2_8 = makeUngradedCriterion(
-        "[[[acceptEdge]]] gibt die korrekten Werte zurück."
-    );
-    private static final Criterion H2_9 = makeUngradedCriterion(
-        "[[[calculateMST]]] ruft [[[acceptEdge]]] mit allen Kanten auf."
-    );
-    private static final Criterion H2_10 = makeUngradedCriterion(
-        "[[[calculateMST]]] funktioniert vollständig korrekt."
-    );
-    private static final Criterion H2 = Criterion.builder()
-        .shortDescription("Kruskal")
-        .addChildCriteria(H2_1, H2_2, H2_3, H2_4, H2_5, H2_6, H2_7, H2_8, H2_9, H2_10)
+    private static final Criterion H2_C = Criterion.builder()
+        .shortDescription("H2 c) [[[joinGroups]]]")
+        .addChildCriteria(H2_C_1, H2_C_2)
         .build();
 
-    private static final Criterion H3_1 = makeCriterion(
-        "Methode [[[init]]] funktioniert vollständig korrekt.",
-        JUnitTestRef.ofMethod(() -> DijkstraPathCalculatorTests.class.getDeclaredMethod("testInit", SerializedGraph.class, Object.class))
+    private static final Criterion H2_D_1 = makeUngradedCriterion(
+        "[[[acceptEdge]]] funktioniert korrekt, wenn beide Knoten in der gleichen Menge sind."
     );
-    private static final Criterion H3_2 = makeCriterion(
+    private static final Criterion H2_D_2 = makeUngradedCriterion(
+        "[[[acceptEdge]]] funktioniert korrekt, wenn beide Knoten in unterschiedlichen Mengen sind."
+    );
+    private static final Criterion H2_D_3 = makeUngradedCriterion(
+        "[[[acceptEdge]]] ruft [[[joinGroups]]] an der richtigen Stelle auf."
+    );
+    private static final Criterion H2_D_4 = makeUngradedCriterion(
+        "[[[acceptEdge]]] gibt die korrekten Werte zurück."
+    );
+    private static final Criterion H2_D = Criterion.builder()
+        .shortDescription("H2 d) [[[acceptEdge]]]")
+        .addChildCriteria(H2_D_1, H2_D_2, H2_D_3, H2_D_4)
+        .build();
+
+    private static final Criterion H2_E_1 = makeUngradedCriterion(
+        "[[[calculateMST]]] ruft [[[acceptEdge]]] mit allen Kanten auf."
+    );
+    private static final Criterion H2_E_2 = makeUngradedCriterion(
+        "[[[calculateMST]]] funktioniert vollständig korrekt."
+    );
+    private static final Criterion H2_E = Criterion.builder()
+        .shortDescription("H2 e) [[[calculateMST]]]")
+        .addChildCriteria(H2_E_1, H2_E_2)
+        .build();
+
+    private static final Criterion H2 = Criterion.builder()
+        .shortDescription("H2: Kruskal")
+        .addChildCriteria(H2_A, H2_B, H2_C, H2_D, H2_E)
+        .build();
+
+    private static final Criterion H3_A = Criterion.builder()
+        .shortDescription("H3 a) [[[init]]]")
+        .addChildCriteria(makeCriterion(
+            "Methode [[[init]]] funktioniert vollständig korrekt.",
+            JUnitTestRef.ofMethod(() -> DijkstraPathCalculatorTests.class.getDeclaredMethod("testInit", SerializedGraph.class, Object.class))
+        ))
+        .build();
+
+    private static final Criterion H3_B_1 = makeCriterion(
         "[[[extractMin]]] funktioniert korrekt, wenn alle Knoten in [[[remainingNodes]]] sind.",
         JUnitTestRef.ofMethod(() -> DijkstraPathCalculatorTests.class.getDeclaredMethod("testExtractMinSimple", SerializedGraph.class, List.class, Object.class))
     );
-    private static final Criterion H3_3 = makeCriterion(
+    private static final Criterion H3_B_2 = makeCriterion(
         "[[[extractMin]]] funktioniert vollständig korrekt.",
         JUnitTestRef.ofMethod(() -> DijkstraPathCalculatorTests.class.getDeclaredMethod("testExtractMinFull", SerializedGraph.class, List.class, Set.class, Object.class))
     );
-    private static final Criterion H3_4 = makeUngradedCriterion(
-        "[[[relax]]] funktioniert korrekt."
+    private static final Criterion H3_B = Criterion.builder()
+        .shortDescription("H3 b) [[[extractMin]]]")
+        .addChildCriteria(H3_B_1, H3_B_2)
+        .build();
+
+    private static final Criterion H3_C_1 = makeUngradedCriterion(
+        "[[[relax]]] passt [[[distances]]] korrekt an."
     );
-    private static final Criterion H3_5 = makeUngradedCriterion(
-        "[[[reconstructPath]]] funktioniert vollständig korrekt.", 0, 2
+    private static final Criterion H3_C_2 = makeUngradedCriterion(
+        "[[[relax]]] passt [[[predecessors]]] korrekt an."
     );
-    private static final Criterion H3_6 = makeUngradedCriterion(
+    private static final Criterion H3_C = Criterion.builder()
+        .shortDescription("H3 c) [[[relax]]]")
+        .addChildCriteria(H3_C_1, H3_C_2)
+        .build();
+
+    private static final Criterion H3_D = Criterion.builder()
+        .shortDescription("H3 d) [[[reconstructPath]]]")
+        .addChildCriteria(makeUngradedCriterion(
+            "[[[reconstructPath]]] funktioniert vollständig korrekt.", 0, 2
+        ))
+        .build();
+
+    private static final Criterion H3_E_1 = makeUngradedCriterion(
         "[[[calculatePath]]] funktioniert korrekt für Graphen mit 2 Knoten."
     );
-    private static final Criterion H3_7 = makeUngradedCriterion(
+    private static final Criterion H3_E_2 = makeUngradedCriterion(
         "[[[calculatePath]]] funktioniert korrekt für Graphen mit 3 Knoten."
     );
-    private static final Criterion H3_8 = makeUngradedCriterion(
+    private static final Criterion H3_E_3 = makeUngradedCriterion(
         "[[[calculatePath]]] funktioniert korrekt für Graphen mit mehr als 3 Knoten."
     );
+    private static final Criterion H3_E = Criterion.builder()
+        .shortDescription("H3 e) [[[calculatePath]]]")
+        .addChildCriteria(H3_E_1, H3_E_2, H3_E_3)
+        .build();
+
     private static final Criterion H3 = Criterion.builder()
-        .shortDescription("Dijkstra")
-        .addChildCriteria(H3_1, H3_2, H3_3, H3_4, H3_5, H3_6, H3_7, H3_8)
+        .shortDescription("H3: Dijkstra")
+        .addChildCriteria(H3_A, H3_B, H3_C, H3_D, H3_E)
         .build();
 
     public static final Rubric RUBRIC = Rubric.builder()
