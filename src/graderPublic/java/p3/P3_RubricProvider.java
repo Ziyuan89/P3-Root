@@ -8,8 +8,7 @@ import p3.graph.BasicGraphTests;
 import p3.graph.EdgeTests;
 import p3.solver.DijkstraPathCalculatorTests;
 import p3.solver.KruskalMSTCalculatorTests;
-import p3.transform.ClassTransformerTemplate;
-import p3.transform.Transformers;
+import p3.transform.AdjacencyGraphTransformer;
 import p3.util.SerializedEdge;
 import p3.util.SerializedGraph;
 
@@ -210,8 +209,7 @@ public class P3_RubricProvider implements RubricProvider {
     @Override
     public void configure(RubricConfiguration configuration) {
         RubricProvider.super.configure(configuration);
-        configuration.addTransformer(new ClassTransformerTemplate("AdjacencyGraphConstructorTransformer",
-            Transformers.ADJACENCY_GRAPH_CONSTRUCTOR_TRANSFORMER));
+        configuration.addTransformer(new AdjacencyGraphTransformer());
     }
 
     private static Criterion makeCriterion(String description, JUnitTestRef... jUnitTestRefs) {
