@@ -5,6 +5,7 @@ import p3.SetUtils;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -83,5 +84,5 @@ public class BasicGraph<N> implements Graph<N> {
     /**
      * An empty immutable {@link Graph}.
      */
-    static Graph<Object> EMPTY = new BasicGraph<>(Set.of(), Set.of());
+    static Supplier<Graph<Object>> EMPTY = () -> new BasicGraph<>(Set.of(), Set.of());
 }

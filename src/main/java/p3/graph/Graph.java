@@ -67,7 +67,7 @@ public interface Graph<N> {
      */
     @SuppressWarnings("unchecked")
     static <N> Graph<N> of() {
-        return (Graph<N>) BasicGraph.EMPTY;
+        return (Graph<N>) BasicGraph.EMPTY.get();
     }
 
     /**
