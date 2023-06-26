@@ -103,6 +103,7 @@ public class KruskalScene<N> extends AnimationScene {
 
         root.setCenter(graphPane);
 
+        controlPane.setGraphPane(graphPane);
         controlPane.disableNextStepButton();
     }
 
