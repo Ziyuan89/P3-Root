@@ -2,6 +2,7 @@ package p3;
 
 import org.sourcegrade.jagr.api.rubric.*;
 import org.sourcegrade.jagr.api.testing.RubricConfiguration;
+import org.sourcegrade.jagr.api.testing.TestCycle;
 import p3.graph.AdjacencyGraphTests;
 import p3.graph.AdjacencyMatrixTests;
 import p3.graph.BasicGraphTests;
@@ -9,6 +10,8 @@ import p3.graph.EdgeTests;
 import p3.solver.DijkstraPathCalculatorTests;
 import p3.solver.KruskalMSTCalculatorTests;
 import p3.transform.AdjacencyGraphTransformer;
+import p3.transform.KruskalMSTCalculatorTransformer;
+import p3.util.KruskalAcceptEdgeExtension;
 import p3.util.SerializedEdge;
 import p3.util.SerializedGraph;
 
@@ -107,18 +110,22 @@ public class P3_RubricProvider implements RubricProvider {
         .addChildCriteria(H2_C_1, H2_C_2)
         .build();
 
-    private static final Criterion H2_D_1 = makeUngradedCriterion(
-        "[[[acceptEdge]]] funktioniert korrekt, wenn beide Knoten in der gleichen Menge sind."
+    private static final Criterion H2_D_1 = makeCriterion(
+        "[[[acceptEdge]]] funktioniert korrekt, wenn beide Knoten in der gleichen Menge sind.",
+        JUnitTestRef.ofMethod(() -> KruskalMSTCalculatorTests.class.getDeclaredMethod("testAcceptEdgeSameGroup", List.class, SerializedEdge.class))
     );
-    private static final Criterion H2_D_2 = makeUngradedCriterion(
-        "[[[acceptEdge]]] funktioniert korrekt, wenn beide Knoten in unterschiedlichen Mengen sind."
+    private static final Criterion H2_D_2 = makeCriterion(
+        "[[[acceptEdge]]] funktioniert korrekt, wenn beide Knoten in unterschiedlichen Mengen sind.",
+        JUnitTestRef.ofMethod(() -> KruskalMSTCalculatorTests.class.getDeclaredMethod("testAcceptEdgeDifferentGroup", List.class, SerializedEdge.class))
     );
-    private static final Criterion H2_D_3 = makeUngradedCriterion(
-        "[[[acceptEdge]]] ruft [[[joinGroups]]] an der richtigen Stelle auf."
+    private static final Criterion H2_D_3 = makeCriterion(
+        "[[[acceptEdge]]] ruft [[[joinGroups]]] an der richtigen Stelle auf.",
+        JUnitTestRef.ofMethod(() -> KruskalMSTCalculatorTests.class.getDeclaredMethod("testAcceptEdgeCallJoinGroups", List.class, SerializedEdge.class, boolean.class))
     );
-    private static final Criterion H2_D_4 = makeUngradedCriterion(
-        "[[[acceptEdge]]] gibt die korrekten Werte zurück."
-    );
+    private static final Criterion H2_D_4 = Criterion.builder()
+        .shortDescription("[[[acceptEdge]]] gibt immer die korrekten Werte zurück.")
+        .grader((testCycle, criterion) -> GradeResult.ofCorrect(KruskalAcceptEdgeExtension.isAcceptEdgeCorrect() ? 1 : 0))
+        .build();
     private static final Criterion H2_D = Criterion.builder()
         .shortDescription("H2 d) [[[acceptEdge]]]")
         .addChildCriteria(H2_D_1, H2_D_2, H2_D_3, H2_D_4)
@@ -212,6 +219,7 @@ public class P3_RubricProvider implements RubricProvider {
     public void configure(RubricConfiguration configuration) {
         RubricProvider.super.configure(configuration);
         configuration.addTransformer(new AdjacencyGraphTransformer());
+        configuration.addTransformer(new KruskalMSTCalculatorTransformer());
     }
 
     private static Criterion makeCriterion(String description, JUnitTestRef... jUnitTestRefs) {

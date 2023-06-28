@@ -1,12 +1,16 @@
 package p3.solver;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junitpioneer.jupiter.json.JsonClasspathSource;
 import org.junitpioneer.jupiter.json.Property;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
+import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 import p3.graph.Graph;
+import p3.util.KruskalAcceptEdgeExtension;
+import p3.util.SerializedEdge;
 import p3.util.SerializedGraph;
 import p3.util.Utils;
 
@@ -21,6 +25,8 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
 
 @TestForSubmission
 public class KruskalMSTCalculatorTests {
+
+    public static boolean calledJoinGroups;
 
     private static Field mstEdgesField;
     private static Field mstGroupsField;
@@ -125,5 +131,61 @@ public class KruskalMSTCalculatorTests {
 
         assertTrue(mstGroups.stream().anyMatch(mstGroup -> mstGroup == largerMstGroup), context,
             result -> "[[[joinGroups]]] did not insert the values of the smaller group into the larger one");
+    }
+
+    @ParameterizedTest
+    @ExtendWith(KruskalAcceptEdgeExtension.class)
+    @JsonClasspathSource(value = "kruskalMSTCalculator.json", data = "acceptEdgeSameGroup")
+    public <N> void testAcceptEdgeSameGroup(@Property("mstGroups") List<Set<N>> mstGroups,
+                                            @Property("edge") SerializedEdge<N> serializedEdge) {
+        Context context = contextBuilder()
+            .add("mstGroups", mstGroups)
+            .add("edge", serializedEdge)
+            .build();
+        KruskalMSTCalculator<N> kruskalMSTCalculatorInstance = new KruskalMSTCalculator<>(Graph.of());
+        Utils.setFieldValue(mstGroupsField, kruskalMSTCalculatorInstance, mstGroups);
+
+        assertFalse(kruskalMSTCalculatorInstance.acceptEdge(serializedEdge.toEdge()), context,
+            result -> "[[[acceptEdge]]] did not return the expected value");
+    }
+
+    @ParameterizedTest
+    @ExtendWith(KruskalAcceptEdgeExtension.class)
+    @JsonClasspathSource(value = "kruskalMSTCalculator.json", data = "acceptEdgeDifferentGroup")
+    public <N> void testAcceptEdgeDifferentGroup(@Property("mstGroups") List<Set<N>> mstGroups,
+                                                 @Property("edge") SerializedEdge<N> serializedEdge) {
+        Context context = contextBuilder()
+            .add("mstGroups", mstGroups)
+            .add("edge", serializedEdge)
+            .build();
+        KruskalMSTCalculator<N> kruskalMSTCalculatorInstance = new KruskalMSTCalculator<>(Graph.of());
+        Utils.setFieldValue(mstGroupsField, kruskalMSTCalculatorInstance, mstGroups);
+
+        assertTrue(kruskalMSTCalculatorInstance.acceptEdge(serializedEdge.toEdge()), context,
+            result -> "[[[acceptEdge]]] did not return the expected value");
+    }
+
+    @ParameterizedTest
+    @ExtendWith(JagrExecutionCondition.class)
+    @JsonClasspathSource(value = "kruskalMSTCalculator.json", data = "acceptEdgeCallJoinGroups")
+    public <N> void testAcceptEdgeCallJoinGroups(@Property("mstGroups") List<Set<N>> mstGroups,
+                                                 @Property("edge") SerializedEdge<N> serializedEdge,
+                                                 @Property("callJoinGroups") boolean callJoinGroups) {
+        Context context = contextBuilder()
+            .add("mstGroups", mstGroups)
+            .add("edge", serializedEdge)
+            .build();
+        KruskalMSTCalculator<N> kruskalAcceptEdgeExtensionInstance = new KruskalMSTCalculator<>(Graph.of());
+        Utils.setFieldValue(mstGroupsField, kruskalAcceptEdgeExtensionInstance, mstGroups);
+        calledJoinGroups = false;
+        kruskalAcceptEdgeExtensionInstance.acceptEdge(serializedEdge.toEdge());
+
+        if (callJoinGroups) {
+            assertTrue(calledJoinGroups, context,
+                result -> "[[[acceptEdge]]] did not call [[[joinGroups]]] when it should have");
+        } else {
+            assertFalse(calledJoinGroups, context,
+                result -> "[[[acceptEdge]]] called [[[joinGroups]]] when it should not have");
+        }
     }
 }
