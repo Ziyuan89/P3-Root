@@ -94,11 +94,13 @@ public class P3_RubricProvider implements RubricProvider {
         ))
         .build();
 
-    private static final Criterion H2_C_1 = makeUngradedCriterion(
-        "Alle Gruppen beinhalten die korrekten Werte nach Aufruf von [[[joinGroups]]]."
+    private static final Criterion H2_C_1 = makeCriterion(
+        "Alle Gruppen beinhalten die korrekten Werte nach Aufruf von [[[joinGroups]]].",
+        JUnitTestRef.ofMethod(() -> KruskalMSTCalculatorTests.class.getDeclaredMethod("testJoinGroups", List.class, List.class, int.class, int.class))
     );
-    private static final Criterion H2_C_2 = makeUngradedCriterion(
-        "[[[joinGroups]]] fügt die Werte in die größere der beiden Mengen ein."
+    private static final Criterion H2_C_2 = makeCriterion(
+        "[[[joinGroups]]] fügt die Werte in die größere der beiden Mengen ein.",
+        JUnitTestRef.ofMethod(() -> KruskalMSTCalculatorTests.class.getDeclaredMethod("testJoinGroupsInsertion", List.class, int.class, int.class))
     );
     private static final Criterion H2_C = Criterion.builder()
         .shortDescription("H2 c) [[[joinGroups]]]")

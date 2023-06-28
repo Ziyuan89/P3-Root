@@ -10,5 +10,73 @@
         {"a": "D", "b": "E", "weight": 1}
       ]
     }
+  ],
+  "joinGroups": [
+    {
+      "initialMstGroups": [
+        ["A"], ["B"], ["C"]
+      ],
+      "expectedMstGroups": [
+        ["A", "B"], ["C"]
+      ],
+      "indexA": 0,
+      "indexB": 1
+    },
+    {
+      "initialMstGroups": [
+        ["A", "B"], ["C"]
+      ],
+      "expectedMstGroups": [
+        ["A", "B", "C"]
+      ],
+      "indexA": 0,
+      "indexB": 1
+    },
+    {
+      "initialMstGroups": [
+        [1], [2]
+      ],
+      "expectedMstGroups": [
+        [1, 2]
+      ],
+      "indexA": 0,
+      "indexB": 1
+    },
+    {
+      "initialMstGroups": [
+        [1, 2], [3], [4], [5]
+      ],
+      "expectedMstGroups": [
+        [1, 2], [3], [4, 5]
+      ],
+      "indexA": 2,
+      "indexB": 3
+    },
+    {
+      "initialMstGroups": [
+        [1, 2], [3], [4], [5]
+      ],
+      "expectedMstGroups": [
+        [1, 2], [3], [4, 5]
+      ],
+      "indexA": 3,
+      "indexB": 2
+    }
+  ],
+  "joinGroupsInsertion": [
+    {
+      "mstGroups": [
+        [1], [2, 3]
+      ],
+      "smallerGroupIndex": 0,
+      "largerGroupIndex": 1
+    },
+    {
+      "mstGroups": [
+        ["A", "B", "C"], ["D"], ["E", "F"]
+      ],
+      "smallerGroupIndex": 2,
+      "largerGroupIndex": 0
+    }
   ]
 }
