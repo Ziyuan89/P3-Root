@@ -196,4 +196,51 @@ public class DijkstraPathCalculatorTests {
                 result -> "The returned path differs from the expected one at index " + finalI);
         }
     }
+
+    @ParameterizedTest
+    @JsonClasspathSource(value = "dijkstraPathCalculator.json", data = "calculatePathTwoNodes")
+    public <N> void testCalculatePathTwoNodes(@Property("graph") SerializedGraph<N> serializedGraph,
+                                              @Property("startNode") N startNode,
+                                              @Property("endNode") N endNode,
+                                              @Property("expectedPath") List<N> expectedPath) {
+        testCalculatePath(serializedGraph, startNode, endNode, expectedPath);
+    }
+
+    @ParameterizedTest
+    @JsonClasspathSource(value = "dijkstraPathCalculator.json", data = "calculatePathThreeNodes")
+    public <N> void testCalculatePathThreeNodes(@Property("graph") SerializedGraph<N> serializedGraph,
+                                                @Property("startNode") N startNode,
+                                                @Property("endNode") N endNode,
+                                                @Property("expectedPath") List<N> expectedPath) {
+        testCalculatePath(serializedGraph, startNode, endNode, expectedPath);
+    }
+
+    @ParameterizedTest
+    @JsonClasspathSource(value = "dijkstraPathCalculator.json", data = "calculatePathAnyNodes")
+    public <N> void testCalculatePathAnyNodes(@Property("graph") SerializedGraph<N> serializedGraph,
+                                              @Property("startNode") N startNode,
+                                              @Property("endNode") N endNode,
+                                              @Property("expectedPath") List<N> expectedPath) {
+        testCalculatePath(serializedGraph, startNode, endNode, expectedPath);
+    }
+
+    public <N> void testCalculatePath(SerializedGraph<N> serializedGraph, N startNode, N endNode, List<N> expectedPath) {
+        Graph<N> graph = serializedGraph.toGraph();
+        List<N> actualPath = new DijkstraPathCalculator<>(graph).calculatePath(startNode, endNode);
+        Context context = contextBuilder()
+            .add("graph", serializedGraph)
+            .add("startNode", startNode)
+            .add("endNode", endNode)
+            .add("expectedPath", expectedPath)
+            .build();
+
+        assertNotNull(actualPath, context, result -> "Returned object is null");
+        assertEquals(expectedPath.size(), actualPath.size(), context,
+            result -> "Returned path does not contain the expected number of nodes");
+        for (int i = 0; i < expectedPath.size(); i++) {
+            final int finalI = i;
+            assertEquals(expectedPath.get(i), actualPath.get(i), context,
+                result -> "The returned path differs from the expected one at index " + finalI);
+        }
+    }
 }

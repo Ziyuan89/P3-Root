@@ -190,14 +190,17 @@ public class P3_RubricProvider implements RubricProvider {
         ))
         .build();
 
-    private static final Criterion H3_E_1 = makeUngradedCriterion(
-        "[[[calculatePath]]] funktioniert korrekt für Graphen mit 2 Knoten."
+    private static final Criterion H3_E_1 = makeCriterion(
+        "[[[calculatePath]]] funktioniert korrekt für Graphen mit 2 Knoten.",
+        JUnitTestRef.ofMethod(() -> DijkstraPathCalculatorTests.class.getDeclaredMethod("testCalculatePathTwoNodes", SerializedGraph.class, Object.class, Object.class, List.class))
     );
-    private static final Criterion H3_E_2 = makeUngradedCriterion(
-        "[[[calculatePath]]] funktioniert korrekt für Graphen mit 3 Knoten."
+    private static final Criterion H3_E_2 = makeCriterion(
+        "[[[calculatePath]]] funktioniert korrekt für Graphen mit 3 Knoten.",
+        JUnitTestRef.ofMethod(() -> DijkstraPathCalculatorTests.class.getDeclaredMethod("testCalculatePathThreeNodes", SerializedGraph.class, Object.class, Object.class, List.class))
     );
-    private static final Criterion H3_E_3 = makeUngradedCriterion(
-        "[[[calculatePath]]] funktioniert korrekt für Graphen mit mehr als 3 Knoten."
+    private static final Criterion H3_E_3 = makeCriterion(
+        "[[[calculatePath]]] funktioniert korrekt für Graphen mit mehr als 3 Knoten.",
+        JUnitTestRef.ofMethod(() -> DijkstraPathCalculatorTests.class.getDeclaredMethod("testCalculatePathAnyNodes", SerializedGraph.class, Object.class, Object.class, List.class))
     );
     private static final Criterion H3_E = Criterion.builder()
         .shortDescription("H3 e) [[[calculatePath]]]")

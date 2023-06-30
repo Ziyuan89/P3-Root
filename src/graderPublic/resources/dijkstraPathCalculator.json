@@ -97,5 +97,109 @@
       ],
       "expectedPath": ["A", "B", "C"]
     }
+  ],
+  "calculatePathTwoNodes": [
+    {
+      "expectedPath": ["A", "B"],
+      "startNode": "A",
+      "endNode": "B",
+      "graph": {
+        "nodes": ["A", "B"],
+        "edges": [
+          {"a": "A", "b": "B", "weight": 20}
+        ]
+      }
+    }
+  ],
+  "calculatePathThreeNodes": [
+    {
+      "expectedPath": ["A", "B", "C"],
+      "startNode": "A",
+      "endNode": "C",
+      "graph": {
+        "nodes": ["A", "B", "C"],
+        "edges": [
+          {"a": "A", "b": "B", "weight": 20},
+          {"a": "B", "b": "C", "weight": 2}
+        ]
+      }
+    }
+  ],
+  "calculatePathAnyNodes": [
+    {
+      "expectedPath": ["A", "C", "B", "D"],
+      "startNode": "A",
+      "endNode": "D",
+      "graph": {
+        "nodes": ["A", "B", "C", "D"],
+        "edges": [
+          {"a": "A", "b": "B", "weight": 20},
+          {"a": "A", "b": "C", "weight": 2},
+          {"a": "B", "b": "C", "weight": 3},
+          {"a": "B", "b": "D", "weight": 5}
+        ]
+      }
+    },
+    {
+      "expectedPath": [1, 3, 2, 4],
+      "startNode": 1,
+      "endNode": 4,
+      "graph": {
+        "nodes": [1, 2, 3, 4],
+        "edges": [
+          {"a": 1, "b": 2, "weight": 20},
+          {"a": 1, "b": 3, "weight": 2},
+          {"a": 2, "b": 3, "weight": 3},
+          {"a": 2, "b": 4, "weight": 5}
+        ]
+      }
+    },
+    {
+      "expectedPath": ["A", "B"],
+      "startNode": "A",
+      "endNode": "B",
+      "graph": {
+        "nodes": ["A", "B", "C", "D"],
+        "edges": [
+          {"a": "A", "b": "B", "weight": 1},
+          {"a": "A", "b": "C", "weight": 0},
+          {"a": "C", "b": "D", "weight": 2},
+          {"a": "D", "b": "B", "weight": 0}
+        ]
+      }
+    },
+    {
+      "expectedPath": ["A", "B", "C", "D"],
+      "startNode": "A",
+      "endNode": "D",
+      "graph": {
+        "nodes": ["A", "B", "C", "D"],
+        "edges": [
+          {"a": "A", "b": "B", "weight": 1},
+          {"a": "B", "b": "C", "weight": 1},
+          {"a": "C", "b": "D", "weight": 1}
+        ]
+      }
+    },
+    {
+      "expectedPath": ["A", "B", "C", "G", "H"],
+      "startNode": "A",
+      "endNode": "H",
+      "graph": {
+        "nodes": ["A", "B", "C", "D", "E", "F", "G", "H"],
+        "edges": [
+          {"a": "A", "b": "B", "weight": 1},
+          {"a": "B", "b": "C", "weight": 1},
+          {"a": "C", "b": "D", "weight": 1},
+          {"a": "D", "b": "E", "weight": 1},
+          {"a": "E", "b": "F", "weight": 1},
+          {"a": "F", "b": "G", "weight": 1},
+          {"a": "G", "b": "H", "weight": 1},
+          {"a": "H", "b": "A", "weight": 100},
+          {"a": "A", "b": "E", "weight": 3},
+          {"a": "C", "b": "G", "weight": 2}
+        ]
+      }
+    }
   ]
 }
