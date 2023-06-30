@@ -2,7 +2,6 @@ package p3;
 
 import org.sourcegrade.jagr.api.rubric.*;
 import org.sourcegrade.jagr.api.testing.RubricConfiguration;
-import org.sourcegrade.jagr.api.testing.TestCycle;
 import p3.graph.AdjacencyGraphTests;
 import p3.graph.AdjacencyMatrixTests;
 import p3.graph.BasicGraphTests;
@@ -131,11 +130,13 @@ public class P3_RubricProvider implements RubricProvider {
         .addChildCriteria(H2_D_1, H2_D_2, H2_D_3, H2_D_4)
         .build();
 
-    private static final Criterion H2_E_1 = makeUngradedCriterion(
-        "[[[calculateMST]]] ruft [[[acceptEdge]]] mit allen Kanten auf."
+    private static final Criterion H2_E_1 = makeCriterion(
+        "[[[calculateMST]]] ruft [[[acceptEdge]]] mit allen Kanten auf.",
+        JUnitTestRef.ofMethod(() -> KruskalMSTCalculatorTests.class.getDeclaredMethod("testCalculateMSTAcceptEdge", SerializedGraph.class))
     );
-    private static final Criterion H2_E_2 = makeUngradedCriterion(
-        "[[[calculateMST]]] funktioniert vollständig korrekt."
+    private static final Criterion H2_E_2 = makeCriterion(
+        "[[[calculateMST]]] funktioniert vollständig korrekt.",
+        JUnitTestRef.ofMethod(() -> KruskalMSTCalculatorTests.class.getDeclaredMethod("testCalculateMST", SerializedGraph.class, SerializedGraph.class))
     );
     private static final Criterion H2_E = Criterion.builder()
         .shortDescription("H2 e) [[[calculateMST]]]")

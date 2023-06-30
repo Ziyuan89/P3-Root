@@ -32,7 +32,22 @@ public class KruskalMSTCalculatorTransformer implements ClassTransformer {
 
         @Override
         public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
-            if (name.equals("acceptEdge") && descriptor.equals("(Lp3/graph/Edge;)Z")) {
+            if (name.equals("calculateMST") && descriptor.equals("()Lp3/graph/Graph;") || name.startsWith("lambda$calculateMST$")) {
+                return new MethodVisitor(Opcodes.ASM9, super.visitMethod(access, name, descriptor, signature, exceptions)) {
+                    @Override
+                    public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
+                        if (opcode == Opcodes.INVOKEVIRTUAL &&
+                            owner.equals("p3/solver/KruskalMSTCalculator") &&
+                            name.equals("acceptEdge") &&
+                            descriptor.equals("(Lp3/graph/Edge;)Z")) {
+                            ParameterInterceptor interceptor = new ParameterInterceptor(this);
+                            interceptor.interceptParameters(new Type[] {Type.getObjectType("p3/graph/Edge")});
+                            interceptor.storeArrayRefInList("p3/solver/KruskalMSTCalculatorTests", "acceptEdgeParameters");
+                        }
+                        super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
+                    }
+                };
+            } else if (name.equals("acceptEdge") && descriptor.equals("(Lp3/graph/Edge;)Z")) {
                 return new MethodVisitor(Opcodes.ASM9, super.visitMethod(access, name, descriptor, signature, exceptions)) {
                     @Override
                     public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {

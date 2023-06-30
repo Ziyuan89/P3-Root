@@ -8,6 +8,7 @@ import org.junitpioneer.jupiter.json.Property;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.sourcegrade.jagr.api.testing.extension.JagrExecutionCondition;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
+import p3.graph.Edge;
 import p3.graph.Graph;
 import p3.util.KruskalAcceptEdgeExtension;
 import p3.util.SerializedEdge;
@@ -16,6 +17,7 @@ import p3.util.Utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InaccessibleObjectException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +29,7 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
 public class KruskalMSTCalculatorTests {
 
     public static boolean calledJoinGroups;
+    public static List<Object[]> acceptEdgeParameters = new ArrayList<>();
 
     private static Field mstEdgesField;
     private static Field mstGroupsField;
@@ -187,5 +190,49 @@ public class KruskalMSTCalculatorTests {
             assertFalse(calledJoinGroups, context,
                 result -> "[[[acceptEdge]]] called [[[joinGroups]]] when it should not have");
         }
+    }
+
+    @ParameterizedTest
+    @ExtendWith(JagrExecutionCondition.class)
+    @JsonClasspathSource(value = "kruskalMSTCalculator.json", data = "calculateMSTAcceptEdge")
+    public <N> void testCalculateMSTAcceptEdge(@Property("graph") SerializedGraph<N> serializedGraph) {
+        Context context = contextBuilder()
+            .add("graph", serializedGraph)
+            .build();
+        Graph<N> graph = serializedGraph.toGraph();
+        KruskalMSTCalculator<N> kruskalMSTCalculatorInstance = new KruskalMSTCalculator<>(graph);
+        acceptEdgeParameters.clear();
+        kruskalMSTCalculatorInstance.calculateMST();
+
+        assertEquals(graph.getEdges().size(), acceptEdgeParameters.size(), context,
+            result -> "[[[acceptEdge]]] was not invoked the expected number of times");
+        @SuppressWarnings("unchecked") List<Edge<N>> actualAcceptEdgeParameters = acceptEdgeParameters.stream()
+            .map(objects -> (Edge<N>) objects[0])
+            .toList();
+        for (Edge<N> edge : graph.getEdges()) {
+            assertTrue(actualAcceptEdgeParameters.contains(edge), context,
+                result -> "[[[calculateMST]]] did not call [[[acceptEdge]]] with edge " + edge);
+        }
+    }
+
+    @ParameterizedTest
+    @JsonClasspathSource(value = "kruskalMSTCalculator.json", data = "calculateMST")
+    public <N> void testCalculateMST(@Property("graph") SerializedGraph<N> serializedGraph,
+                                     @Property("expectedMST") SerializedGraph<N> expectedMST) {
+        Context context = contextBuilder()
+            .add("graph", serializedGraph)
+            .add("expected MST", expectedMST)
+            .build();
+        KruskalMSTCalculator<N> kruskalMSTCalculatorInstance = new KruskalMSTCalculator<>(serializedGraph.toGraph());
+        Graph<N> actualMST = kruskalMSTCalculatorInstance.calculateMST();
+
+        assertEquals(expectedMST.nodes().size(), actualMST.getNodes().size(), context,
+            result -> "The returned graph does not have the expected number of nodes");
+        assertTrue(actualMST.getNodes().containsAll(expectedMST.nodes()), context,
+            result -> "The returned graph does not contain all expected nodes");
+        assertEquals(expectedMST.edges().size(), actualMST.getEdges().size(), context,
+            result -> "The returned graph does not have the expected number of edges");
+        assertTrue(actualMST.getEdges().containsAll(expectedMST.edges().stream().map(SerializedEdge::toEdge).toList()), context,
+            result -> "The returned graph does not contain all expected edges");
     }
 }

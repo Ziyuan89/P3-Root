@@ -148,5 +148,35 @@
       "edge": {"a": "A", "b": "B", "weight": 1},
       "callJoinGroups": false
     }
+  ],
+  "calculateMSTAcceptEdge": [
+    {
+      "graph": {
+        "nodes": ["A", "B", "C"],
+        "edges": [
+          {"a": "A", "b": "B", "weight": 1},
+          {"a": "B", "b": "C", "weight": 1},
+          {"a": "C", "b": "A", "weight": 1}
+        ]
+      }
+    }
+  ],
+  "calculateMST": [
+    {
+      "graph": {
+        "nodes": ["A", "B", "C"],
+        "edges": [
+          {"a": "A", "b": "B", "weight": 1},
+          {"a": "B", "b": "C", "weight": 1}
+        ]
+      },
+      "expectedMST": {
+        "nodes": ["A", "B", "C"],
+        "edges": [
+          {"a": "A", "b": "B", "weight": 1},
+          {"a": "B", "b": "C", "weight": 1}
+        ]
+      }
+    }
   ]
 }
