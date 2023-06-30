@@ -85,5 +85,17 @@
         {"key": "C", "value": null}
       ]
     }
+  ],
+  "reconstructPath": [
+    {
+      "startNode": "A",
+      "endNode": "C",
+      "predecessors": [
+        {"key": "A", "value": null},
+        {"key": "B", "value": "A"},
+        {"key": "C", "value": "B"}
+      ],
+      "expectedPath": ["A", "B", "C"]
+    }
   ]
 }

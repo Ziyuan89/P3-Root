@@ -168,4 +168,32 @@ public class DijkstraPathCalculatorTests {
                 result -> "[[[predecessors]]] does not contain the correct mapping for node " + node);
         }
     }
+
+    @ParameterizedTest
+    @JsonClasspathSource(value = "dijkstraPathCalculator.json", data = "reconstructPath")
+    public <N> void testReconstructPath(@Property("startNode") N start,
+                                        @Property("endNode") N end,
+                                        @Property("predecessors") List<SerializedEntry<N, N>> serializedPredecessors,
+                                        @Property("expectedPath") List<N> expectedPath) {
+        DijkstraPathCalculator<N> dijkstraPathCalculatorInstance = new DijkstraPathCalculator<>(Graph.of());
+        Utils.setFieldValue(predecessorsField, dijkstraPathCalculatorInstance, Utils.deserializeMap(serializedPredecessors));
+        List<N> actualPath = dijkstraPathCalculatorInstance.reconstructPath(start, end);
+        Context context = contextBuilder()
+            .add("start node", start)
+            .add("end node", end)
+            .add("predecessors", serializedPredecessors)
+            .add("expected path", expectedPath)
+            .add("actual path (returned value)", actualPath)
+            .build();
+
+        assertEquals(expectedPath.size(), actualPath.size(), context,
+            result -> "The returned path does not have the correct length");
+        assertTrue(actualPath.containsAll(expectedPath), context,
+            result -> "The returned path does not contain all expected nodes");
+        for (int i = 0; i < expectedPath.size(); i++) {
+            final int finalI = i;
+            assertEquals(expectedPath.get(i), actualPath.get(i), context,
+                result -> "The returned path differs from the expected one at index " + finalI);
+        }
+    }
 }

@@ -184,8 +184,9 @@ public class P3_RubricProvider implements RubricProvider {
 
     private static final Criterion H3_D = Criterion.builder()
         .shortDescription("H3 d) [[[reconstructPath]]]")
-        .addChildCriteria(makeUngradedCriterion(
-            "[[[reconstructPath]]] funktioniert vollständig korrekt.", 0, 2
+        .addChildCriteria(makeCriterion(
+            "[[[reconstructPath]]] funktioniert vollständig korrekt.", 0, 2,
+            JUnitTestRef.ofMethod(() -> DijkstraPathCalculatorTests.class.getDeclaredMethod("testReconstructPath", Object.class, Object.class, List.class, List.class))
         ))
         .build();
 
