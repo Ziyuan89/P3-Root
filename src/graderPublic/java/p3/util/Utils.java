@@ -1,6 +1,9 @@
 package p3.util;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Utils {
 
@@ -21,5 +24,11 @@ public class Utils {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static <K, V> Map<K, V> deserializeMap(List<SerializedEntry<K, V>> serializedEntries) {
+        Map<K, V> map = new HashMap<>();
+        serializedEntries.forEach(serializedEntry -> map.put(serializedEntry.key(), serializedEntry.value()));
+        return map;
     }
 }

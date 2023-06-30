@@ -1,25 +1,22 @@
 package p3.solver;
 
 import org.junit.jupiter.api.BeforeAll;
-import p3.graph.Graph;
-import p3.util.SerializedEdge;
-import p3.util.SerializedEntry;
-import p3.util.SerializedGraph;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junitpioneer.jupiter.json.JsonClasspathSource;
 import org.junitpioneer.jupiter.json.Property;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
+import p3.graph.Graph;
+import p3.util.SerializedEdge;
+import p3.util.SerializedEntry;
+import p3.util.SerializedGraph;
 import p3.util.Utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InaccessibleObjectException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
 
@@ -107,8 +104,7 @@ public class DijkstraPathCalculatorTests {
             .add("distances", serializedDistances)
             .build();
         DijkstraPathCalculator<N> dijkstraPathCalculatorInstance = new DijkstraPathCalculator<>(serializedGraph.toGraph());
-        Utils.setFieldValue(distancesField, dijkstraPathCalculatorInstance, serializedDistances.stream()
-            .collect(Collectors.toMap(SerializedEntry::key, SerializedEntry::value)));
+        Utils.setFieldValue(distancesField, dijkstraPathCalculatorInstance, Utils.deserializeMap(serializedDistances));
         Utils.setFieldValue(remainingNodesField, dijkstraPathCalculatorInstance, remainingNodes);
 
         assertEquals(expectedNode, dijkstraPathCalculatorInstance.extractMin(), context,
@@ -128,14 +124,10 @@ public class DijkstraPathCalculatorTests {
             .add("expected distances", serializedExpectedDistances)
             .build();
         DijkstraPathCalculator<N> dijkstraPathCalculatorInstance = new DijkstraPathCalculator<>(Graph.of());
-        Utils.setFieldValue(distancesField, dijkstraPathCalculatorInstance, serializedInitialDistances.stream()
-            .collect(Collectors.toMap(SerializedEntry::key, SerializedEntry::value)));
-        Map<N, N> tmpMap = new HashMap<>();
-        serializedInitialPredecessors.forEach(serializedEntry -> tmpMap.put(serializedEntry.key(), serializedEntry.value()));
-        Utils.setFieldValue(predecessorsField, dijkstraPathCalculatorInstance, tmpMap);
+        Utils.setFieldValue(distancesField, dijkstraPathCalculatorInstance, Utils.deserializeMap(serializedInitialDistances));
+        Utils.setFieldValue(predecessorsField, dijkstraPathCalculatorInstance, Utils.deserializeMap(serializedInitialPredecessors));
         dijkstraPathCalculatorInstance.relax(serializedEdge.a(), serializedEdge.b(), serializedEdge.toEdge());
-        Map<N, Integer> expectedDistances = serializedExpectedDistances.stream()
-            .collect(Collectors.toMap(SerializedEntry::key, SerializedEntry::value));
+        Map<N, Integer> expectedDistances = Utils.deserializeMap(serializedExpectedDistances);
         Map<N, Integer> actualDistances = Utils.getFieldValue(distancesField, dijkstraPathCalculatorInstance);
 
         assertEquals(expectedDistances.size(), actualDistances.size(), context,
@@ -161,14 +153,10 @@ public class DijkstraPathCalculatorTests {
             .add("expected predecessors", serializedExpectedPredecessors)
             .build();
         DijkstraPathCalculator<N> dijkstraPathCalculatorInstance = new DijkstraPathCalculator<>(Graph.of());
-        Utils.setFieldValue(distancesField, dijkstraPathCalculatorInstance, serializedInitialDistances.stream()
-            .collect(Collectors.toMap(SerializedEntry::key, SerializedEntry::value)));
-        Map<N, N> tmpMap = new HashMap<>();
-        serializedInitialPredecessors.forEach(serializedEntry -> tmpMap.put(serializedEntry.key(), serializedEntry.value()));
-        Utils.setFieldValue(predecessorsField, dijkstraPathCalculatorInstance, tmpMap);
+        Utils.setFieldValue(distancesField, dijkstraPathCalculatorInstance, Utils.deserializeMap(serializedInitialDistances));
+        Utils.setFieldValue(predecessorsField, dijkstraPathCalculatorInstance, Utils.deserializeMap(serializedInitialPredecessors));
         dijkstraPathCalculatorInstance.relax(serializedEdge.a(), serializedEdge.b(), serializedEdge.toEdge());
-        Map<N, N> expectedPredecessors = new HashMap<>();
-        serializedExpectedPredecessors.forEach(serializedEntry -> expectedPredecessors.put(serializedEntry.key(), serializedEntry.value()));
+        Map<N, N> expectedPredecessors = Utils.deserializeMap(serializedExpectedPredecessors);
         Map<N, N> actualPredecessors = Utils.getFieldValue(predecessorsField, dijkstraPathCalculatorInstance);
 
         assertEquals(expectedPredecessors.size(), actualPredecessors.size(), context,
