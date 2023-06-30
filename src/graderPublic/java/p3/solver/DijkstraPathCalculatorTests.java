@@ -1,6 +1,8 @@
 package p3.solver;
 
 import org.junit.jupiter.api.BeforeAll;
+import p3.graph.Graph;
+import p3.util.SerializedEdge;
 import p3.util.SerializedEntry;
 import p3.util.SerializedGraph;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,10 +14,12 @@ import p3.util.Utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InaccessibleObjectException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
 
@@ -109,5 +113,71 @@ public class DijkstraPathCalculatorTests {
 
         assertEquals(expectedNode, dijkstraPathCalculatorInstance.extractMin(), context,
             result -> "[[[extractMin]]] did not return the expected node");
+    }
+
+    @ParameterizedTest
+    @JsonClasspathSource(value = "dijkstraPathCalculator.json", data = "relaxDistances")
+    public <N> void testRelaxDistances(@Property("edge") SerializedEdge<N> serializedEdge,
+                                       @Property("initialDistances") List<SerializedEntry<N, Integer>> serializedInitialDistances,
+                                       @Property("initialPredecessors") List<SerializedEntry<N, N>> serializedInitialPredecessors,
+                                       @Property("expectedDistances") List<SerializedEntry<N, Integer>> serializedExpectedDistances) {
+        Context context = contextBuilder()
+            .add("edge", serializedEdge)
+            .add("initial distances", serializedInitialDistances)
+            .add("initial predecessors", serializedInitialPredecessors)
+            .add("expected distances", serializedExpectedDistances)
+            .build();
+        DijkstraPathCalculator<N> dijkstraPathCalculatorInstance = new DijkstraPathCalculator<>(Graph.of());
+        Utils.setFieldValue(distancesField, dijkstraPathCalculatorInstance, serializedInitialDistances.stream()
+            .collect(Collectors.toMap(SerializedEntry::key, SerializedEntry::value)));
+        Map<N, N> tmpMap = new HashMap<>();
+        serializedInitialPredecessors.forEach(serializedEntry -> tmpMap.put(serializedEntry.key(), serializedEntry.value()));
+        Utils.setFieldValue(predecessorsField, dijkstraPathCalculatorInstance, tmpMap);
+        dijkstraPathCalculatorInstance.relax(serializedEdge.a(), serializedEdge.b(), serializedEdge.toEdge());
+        Map<N, Integer> expectedDistances = serializedExpectedDistances.stream()
+            .collect(Collectors.toMap(SerializedEntry::key, SerializedEntry::value));
+        Map<N, Integer> actualDistances = Utils.getFieldValue(distancesField, dijkstraPathCalculatorInstance);
+
+        assertEquals(expectedDistances.size(), actualDistances.size(), context,
+            result -> "[[[distances]]] does not have the correct size");
+        assertTrue(actualDistances.keySet().containsAll(expectedDistances.keySet()), context,
+            result -> "[[[distances]]] does not contain all expected keys (nodes)");
+        for (N node : expectedDistances.keySet()) {
+            assertEquals(expectedDistances.get(node), actualDistances.get(node), context,
+                result -> "[[[distances]]] does not contain the correct mapping for node " + node);
+        }
+    }
+
+    @ParameterizedTest
+    @JsonClasspathSource(value = "dijkstraPathCalculator.json", data = "relaxPredecessors")
+    public <N> void testRelaxPredecessors(@Property("edge") SerializedEdge<N> serializedEdge,
+                                          @Property("initialDistances") List<SerializedEntry<N, Integer>> serializedInitialDistances,
+                                          @Property("initialPredecessors") List<SerializedEntry<N, N>> serializedInitialPredecessors,
+                                          @Property("expectedPredecessors") List<SerializedEntry<N, N>> serializedExpectedPredecessors) {
+        Context context = contextBuilder()
+            .add("edge", serializedEdge)
+            .add("initial distances", serializedInitialDistances)
+            .add("initial predecessors", serializedInitialPredecessors)
+            .add("expected predecessors", serializedExpectedPredecessors)
+            .build();
+        DijkstraPathCalculator<N> dijkstraPathCalculatorInstance = new DijkstraPathCalculator<>(Graph.of());
+        Utils.setFieldValue(distancesField, dijkstraPathCalculatorInstance, serializedInitialDistances.stream()
+            .collect(Collectors.toMap(SerializedEntry::key, SerializedEntry::value)));
+        Map<N, N> tmpMap = new HashMap<>();
+        serializedInitialPredecessors.forEach(serializedEntry -> tmpMap.put(serializedEntry.key(), serializedEntry.value()));
+        Utils.setFieldValue(predecessorsField, dijkstraPathCalculatorInstance, tmpMap);
+        dijkstraPathCalculatorInstance.relax(serializedEdge.a(), serializedEdge.b(), serializedEdge.toEdge());
+        Map<N, N> expectedPredecessors = new HashMap<>();
+        serializedExpectedPredecessors.forEach(serializedEntry -> expectedPredecessors.put(serializedEntry.key(), serializedEntry.value()));
+        Map<N, N> actualPredecessors = Utils.getFieldValue(predecessorsField, dijkstraPathCalculatorInstance);
+
+        assertEquals(expectedPredecessors.size(), actualPredecessors.size(), context,
+            result -> "[[[predecessors]]] does not have the expected size");
+        assertTrue(actualPredecessors.keySet().containsAll(expectedPredecessors.keySet()), context,
+            result -> "[[[predecessors]]] does not contain all expected keys (nodes)");
+        for (N node : expectedPredecessors.keySet()) {
+            assertEquals(expectedPredecessors.get(node), actualPredecessors.get(node), context,
+                result -> "[[[predecessors]]] does not contain the correct mapping for node " + node);
+        }
     }
 }

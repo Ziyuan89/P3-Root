@@ -169,11 +169,13 @@ public class P3_RubricProvider implements RubricProvider {
         .addChildCriteria(H3_B_1, H3_B_2)
         .build();
 
-    private static final Criterion H3_C_1 = makeUngradedCriterion(
-        "[[[relax]]] passt [[[distances]]] korrekt an."
+    private static final Criterion H3_C_1 = makeCriterion(
+        "[[[relax]]] passt [[[distances]]] korrekt an.",
+        JUnitTestRef.ofMethod(() -> DijkstraPathCalculatorTests.class.getDeclaredMethod("testRelaxDistances", SerializedEdge.class, List.class, List.class, List.class))
     );
-    private static final Criterion H3_C_2 = makeUngradedCriterion(
-        "[[[relax]]] passt [[[predecessors]]] korrekt an."
+    private static final Criterion H3_C_2 = makeCriterion(
+        "[[[relax]]] passt [[[predecessors]]] korrekt an.",
+        JUnitTestRef.ofMethod(() -> DijkstraPathCalculatorTests.class.getDeclaredMethod("testRelaxPredecessors", SerializedEdge.class, List.class, List.class, List.class))
     );
     private static final Criterion H3_C = Criterion.builder()
         .shortDescription("H3 c) [[[relax]]]")

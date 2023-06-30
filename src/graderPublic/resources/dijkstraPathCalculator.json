@@ -45,5 +45,45 @@
       "remainingNodes": ["B", "C"],
       "expected": "B"
     }
+  ],
+  "relaxDistances": [
+    {
+      "edge": {"a": "A", "b": "B", "weight": 100},
+      "initialDistances": [
+        {"key": "A", "value": 0},
+        {"key": "B", "value": 2147483647},
+        {"key": "C", "value": 2147483647}
+      ],
+      "expectedDistances": [
+        {"key": "A", "value": 0},
+        {"key": "B", "value": 100},
+        {"key": "C", "value": 2147483647}
+      ],
+      "initialPredecessors": [
+        {"key": "A", "value": null},
+        {"key": "B", "value": null},
+        {"key": "C", "value": null}
+      ]
+    }
+  ],
+  "relaxPredecessors": [
+    {
+      "edge": {"a": "A", "b": "B", "weight": 100},
+      "initialDistances": [
+        {"key": "A", "value": 0},
+        {"key": "B", "value": 2147483647},
+        {"key": "C", "value": 2147483647}
+      ],
+      "initialPredecessors": [
+        {"key": "A", "value": null},
+        {"key": "B", "value": null},
+        {"key": "C", "value": null}
+      ],
+      "expectedPredecessors": [
+        {"key": "A", "value": null},
+        {"key": "B", "value": "A"},
+        {"key": "C", "value": null}
+      ]
+    }
   ]
 }
