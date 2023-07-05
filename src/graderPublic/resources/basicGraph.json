@@ -7,16 +7,34 @@
     {
       "nodes": [1, 2],
       "edges": [{"a": 1, "b": 2, "weight": 1}]
+    },
+    {
+      "nodes": [true, false],
+      "edges": [{"a": true, "b": false, "weight": 1}]
     }
   ],
   "threeNodes": [
     {
       "nodes": ["A", "B", "C"],
-      "edges": [{"a": "A", "b": "B", "weight": 1}, {"a": "B", "b": "C", "weight": 1}]
+      "edges": [
+        {"a": "A", "b": "B", "weight": 1},
+        {"a": "B", "b": "C", "weight": 1}
+      ]
     },
     {
       "nodes": [1, 2, 3],
-      "edges": [{"a": 1, "b": 2, "weight": 1}, {"a": 2, "b": 3, "weight": 1}]
+      "edges": [
+        {"a": 1, "b": 2, "weight": 1},
+        {"a": 2, "b": 3, "weight": 1}
+      ]
+    },
+    {
+      "nodes": ["Graphs", "are", "fun"],
+      "edges": [
+        {"a": "Graphs", "b": "are", "weight": 1},
+        {"a": "are", "b": "fun", "weight": 1},
+        {"a": "Graphs", "b": "fun", "weight": 1}
+      ]
     }
   ],
   "multipleNodes": [
@@ -54,6 +72,21 @@
         {"a": 7.7, "b": 8.8, "weight": 1},
         {"a": 8.8, "b": 9.9, "weight": 1},
         {"a": 9.9, "b": 1.1, "weight": 1}
+      ]
+    },
+    {
+      "nodes": [1, 2, 3, 4, 5],
+      "edges": [
+        {"a": 1, "b": 2, "weight": 1},
+        {"a": 2, "b": 3, "weight": 1},
+        {"a": 3, "b": 4, "weight": 1},
+        {"a": 4, "b": 5, "weight": 1},
+        {"a": 5, "b": 1, "weight": 1},
+        {"a": 1, "b": 3, "weight": 1},
+        {"a": 1, "b": 4, "weight": 1},
+        {"a": 2, "b": 4, "weight": 1},
+        {"a": 2, "b": 5, "weight": 1},
+        {"a": 3, "b": 5, "weight": 1}
       ]
     }
   ]
