@@ -8,7 +8,7 @@ import p3.graph.BasicGraphTests;
 import p3.graph.EdgeTests;
 import p3.solver.DijkstraPathCalculatorTests;
 import p3.solver.KruskalMSTCalculatorTests;
-import p3.transform.AdjacencyGraphTransformer;
+import p3.transform.AdjacencyMatrixTransformer;
 import p3.transform.KruskalMSTCalculatorTransformer;
 import p3.util.KruskalAcceptEdgeExtension;
 import p3.util.SerializedEdge;
@@ -225,7 +225,7 @@ public class P3_RubricProvider implements RubricProvider {
     @Override
     public void configure(RubricConfiguration configuration) {
         RubricProvider.super.configure(configuration);
-        configuration.addTransformer(new AdjacencyGraphTransformer());
+        configuration.addTransformer(new AdjacencyMatrixTransformer());
         configuration.addTransformer(new KruskalMSTCalculatorTransformer());
     }
 

@@ -1,6 +1,10 @@
 package p3.transform;
 
-import org.objectweb.asm.*;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.sourcegrade.jagr.api.testing.ClassTransformer;
 
 public class KruskalMSTCalculatorTransformer implements ClassTransformer {
@@ -32,29 +36,22 @@ public class KruskalMSTCalculatorTransformer implements ClassTransformer {
 
         @Override
         public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
-            if (name.equals("calculateMST") && descriptor.equals("()Lp3/graph/Graph;") || name.startsWith("lambda$calculateMST$")) {
+            if ("acceptEdge".equals(name) && "(Lp3/graph/Edge;)Z".equals(descriptor) && (access & Opcodes.ACC_STATIC) == 0) {
                 return new MethodVisitor(Opcodes.ASM9, super.visitMethod(access, name, descriptor, signature, exceptions)) {
                     @Override
-                    public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
-                        if (opcode == Opcodes.INVOKEVIRTUAL &&
-                            owner.equals("p3/solver/KruskalMSTCalculator") &&
-                            name.equals("acceptEdge") &&
-                            descriptor.equals("(Lp3/graph/Edge;)Z")) {
-                            ParameterInterceptor interceptor = new ParameterInterceptor(this);
-                            interceptor.interceptParameters(new Type[] {Type.getObjectType("p3/graph/Edge")});
-                            interceptor.storeArrayRefInList("p3/solver/KruskalMSTCalculatorTests", "acceptEdgeParameters");
-                        }
-                        super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
+                    public void visitCode() {
+                        ParameterInterceptor interceptor = new ParameterInterceptor(this);
+                        interceptor.interceptParameters(descriptor, access);
+                        interceptor.storeArrayRefInList("p3/solver/KruskalMSTCalculatorTests", "acceptEdgeParameters");
+                        super.visitCode();
                     }
-                };
-            } else if (name.equals("acceptEdge") && descriptor.equals("(Lp3/graph/Edge;)Z")) {
-                return new MethodVisitor(Opcodes.ASM9, super.visitMethod(access, name, descriptor, signature, exceptions)) {
+
                     @Override
                     public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
                         if (opcode == Opcodes.INVOKEVIRTUAL &&
-                            owner.equals("p3/solver/KruskalMSTCalculator") &&
-                            name.equals("joinGroups") &&
-                            descriptor.equals("(II)V")) {
+                            "p3/solver/KruskalMSTCalculator".equals(owner) &&
+                            "joinGroups".equals(name) &&
+                            "(II)V".equals(descriptor)) {
                             super.visitInsn(Opcodes.ICONST_1);
                             super.visitFieldInsn(Opcodes.PUTSTATIC,
                                 "p3/solver/KruskalMSTCalculatorTests",

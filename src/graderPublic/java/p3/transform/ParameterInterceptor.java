@@ -1,26 +1,22 @@
 package p3.transform;
 
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import java.lang.reflect.Field;
 import java.util.function.Consumer;
 
-import static org.objectweb.asm.Opcodes.AALOAD;
 import static org.objectweb.asm.Opcodes.AASTORE;
 import static org.objectweb.asm.Opcodes.ANEWARRAY;
 import static org.objectweb.asm.Opcodes.BIPUSH;
 import static org.objectweb.asm.Opcodes.CHECKCAST;
 import static org.objectweb.asm.Opcodes.DUP;
-import static org.objectweb.asm.Opcodes.DUP2_X1;
-import static org.objectweb.asm.Opcodes.DUP_X1;
-import static org.objectweb.asm.Opcodes.DUP_X2;
 import static org.objectweb.asm.Opcodes.GETSTATIC;
 import static org.objectweb.asm.Opcodes.INVOKEINTERFACE;
 import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 import static org.objectweb.asm.Opcodes.POP;
-import static org.objectweb.asm.Opcodes.POP2;
 import static org.objectweb.asm.Opcodes.PUTSTATIC;
 import static org.objectweb.asm.Opcodes.SWAP;
 
@@ -40,6 +36,20 @@ public class ParameterInterceptor {
         this.mv = mv;
     }
 
+    public void interceptParametersInstance(Type[] types) {
+        interceptParameters(types, 1);
+    }
+
+    public void interceptParametersStatic(Type[] types) {
+        interceptParameters(types, 0);
+    }
+
+    public void interceptParameters(String descriptor, int access) {
+        Type[] types = Type.getArgumentTypes(descriptor);
+        int localVariableStartIndex = (access & Opcodes.ACC_STATIC) == 0 ? 1 : 0;
+        interceptParameters(types, localVariableStartIndex);
+    }
+
     /**
      * Intercept parameters of any method call. <br>
      * This method creates a new {@link Object} array and stores all parameters to the called method in it.
@@ -50,37 +60,42 @@ public class ParameterInterceptor {
      *
      * @param types the {@link Type} array reflecting the method's parameter types
      */
-    public void interceptParameters(Type[] types) {
+    public void interceptParameters(Type[] types, int localVariableStartIndex) {
         mv.visitIntInsn(BIPUSH, types.length);
         mv.visitTypeInsn(ANEWARRAY, "java/lang/Object");
-        for (int i = types.length - 1; i >= 0; i--) {
-            if (types[i].getDescriptor().matches("[DJ]")) {
-                mv.visitInsn(DUP_X2);
-                mv.visitInsn(DUP_X2);
-                mv.visitInsn(POP);
-                mv.visitIntInsn(BIPUSH, i);
-                mv.visitInsn(DUP_X2);
-                mv.visitInsn(POP);
-            } else {
-                mv.visitInsn(DUP_X1);
-                mv.visitInsn(SWAP);
-                mv.visitIntInsn(BIPUSH, i);
-                mv.visitInsn(SWAP);
-            }
-            boxPrimitiveValue(types[i]);
-            mv.visitInsn(AASTORE);
-        }
+
+        int localVariableIndex = localVariableStartIndex;
+
         for (int i = 0; i < types.length; i++) {
             mv.visitInsn(DUP);
-            mv.visitIntInsn(BIPUSH, i);
-            mv.visitInsn(AALOAD);
-            unboxPrimitiveValue(types[i]);
-            if (types[i].getDescriptor().matches("[DJ]")) {
-                mv.visitInsn(DUP2_X1);
-                mv.visitInsn(POP2);
+
+            // push array index
+            if (i <= 5) {
+                mv.visitInsn(Opcodes.ICONST_0 + i);
+            } else if (i <= Byte.MAX_VALUE) {
+                mv.visitIntInsn(BIPUSH, i);
             } else {
-                mv.visitInsn(SWAP);
+                mv.visitIntInsn(Opcodes.SIPUSH, i);
             }
+
+            // load argument
+            switch (types[i].getSort()) {
+                case Type.BOOLEAN, Type.BYTE, Type.CHAR, Type.SHORT, Type.INT ->
+                    mv.visitVarInsn(Opcodes.ILOAD, localVariableIndex);
+                case Type.FLOAT -> mv.visitVarInsn(Opcodes.FLOAD, localVariableIndex);
+                case Type.LONG -> mv.visitVarInsn(Opcodes.LLOAD, localVariableIndex);
+                case Type.DOUBLE -> mv.visitVarInsn(Opcodes.DLOAD, localVariableIndex);
+                case Type.ARRAY, Type.OBJECT -> mv.visitVarInsn(Opcodes.ALOAD, localVariableIndex);
+                default -> throw new IllegalArgumentException("Unknown type");
+            }
+
+            localVariableIndex += types[i].getSize();
+
+            // box if necessary
+            boxPrimitiveValue(types[i]);
+
+            // store in array
+            mv.visitInsn(AASTORE);
         }
     }
 
@@ -93,13 +108,16 @@ public class ParameterInterceptor {
     private void boxPrimitiveValue(Type type) {
         switch (type.getDescriptor()) {
             case "B" -> mv.visitMethodInsn(INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;", false);
-            case "C" -> mv.visitMethodInsn(INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;", false);
+            case "C" ->
+                mv.visitMethodInsn(INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;", false);
             case "D" -> mv.visitMethodInsn(INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;", false);
             case "F" -> mv.visitMethodInsn(INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;", false);
-            case "I" -> mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false);
+            case "I" ->
+                mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false);
             case "J" -> mv.visitMethodInsn(INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;", false);
             case "S" -> mv.visitMethodInsn(INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;", false);
-            case "Z" -> mv.visitMethodInsn(INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;", false);
+            case "Z" ->
+                mv.visitMethodInsn(INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;", false);
         }
     }
 
