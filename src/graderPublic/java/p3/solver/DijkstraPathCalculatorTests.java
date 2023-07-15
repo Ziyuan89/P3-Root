@@ -177,7 +177,22 @@ public class DijkstraPathCalculatorTests {
                                         @Property("expectedPath") List<N> expectedPath) {
         DijkstraPathCalculator<N> dijkstraPathCalculatorInstance = new DijkstraPathCalculator<>(Graph.of());
         Utils.setFieldValue(predecessorsField, dijkstraPathCalculatorInstance, Utils.deserializeMap(serializedPredecessors));
-        List<N> actualPath = dijkstraPathCalculatorInstance.reconstructPath(start, end);
+
+        N startNodeInPredecessor = serializedPredecessors.stream()
+            .filter(entry -> entry.value() != null)
+            .filter(entry -> entry.value().equals(start))
+            .map(SerializedEntry::value)
+            .findFirst()
+            .orElse(null);
+
+        N endNodeInPredecessor = serializedPredecessors.stream()
+            .filter(entry -> entry.key() != null)
+            .filter(entry -> entry.key().equals(end))
+            .map(SerializedEntry::key)
+            .findFirst()
+            .orElse(null);
+
+        List<N> actualPath = dijkstraPathCalculatorInstance.reconstructPath(startNodeInPredecessor, endNodeInPredecessor);
         Context context = contextBuilder()
             .add("start node", start)
             .add("end node", end)
@@ -203,7 +218,7 @@ public class DijkstraPathCalculatorTests {
                                               @Property("startNode") N startNode,
                                               @Property("endNode") N endNode,
                                               @Property("expectedPath") List<N> expectedPath) {
-        testCalculatePath(serializedGraph, startNode, endNode, expectedPath);
+        testCalculatePathReferenceEquality(serializedGraph, startNode, endNode, expectedPath);
     }
 
     @ParameterizedTest
@@ -212,7 +227,7 @@ public class DijkstraPathCalculatorTests {
                                                 @Property("startNode") N startNode,
                                                 @Property("endNode") N endNode,
                                                 @Property("expectedPath") List<N> expectedPath) {
-        testCalculatePath(serializedGraph, startNode, endNode, expectedPath);
+        testCalculatePathReferenceEquality(serializedGraph, startNode, endNode, expectedPath);
     }
 
     @ParameterizedTest
@@ -222,6 +237,13 @@ public class DijkstraPathCalculatorTests {
                                               @Property("endNode") N endNode,
                                               @Property("expectedPath") List<N> expectedPath) {
         testCalculatePath(serializedGraph, startNode, endNode, expectedPath);
+    }
+
+    public <N> void testCalculatePathReferenceEquality(SerializedGraph<N> serializedGraph, N startNode, N endNode, List<N> expectedPath) {
+        Graph<N> graph = serializedGraph.toGraph();
+        N startNodeInGraph = graph.getNodes().stream().filter(node -> node.equals(startNode)).findFirst().orElseThrow();
+        N endNodeInGraph = graph.getNodes().stream().filter(node -> node.equals(endNode)).findFirst().orElseThrow();
+        testCalculatePath(serializedGraph, startNodeInGraph, endNodeInGraph, expectedPath);
     }
 
     public <N> void testCalculatePath(SerializedGraph<N> serializedGraph, N startNode, N endNode, List<N> expectedPath) {

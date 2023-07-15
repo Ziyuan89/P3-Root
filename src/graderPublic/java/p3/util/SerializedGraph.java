@@ -13,7 +13,10 @@ public record SerializedGraph<N>(Set<N> nodes, List<SerializedEdge<N>> edges) {
         return Graph.of(
             nodes,
             edges.stream()
-                .map(edge -> Edge.of(edge.a(), edge.b(), edge.weight()))
+                .map(edge -> Edge.of(
+                    nodes.stream().filter(n -> n.equals(edge.a())).findFirst().orElseThrow(),
+                    nodes.stream().filter(n -> n.equals(edge.b())).findFirst().orElseThrow(),
+                    edge.weight()))
                 .collect(Collectors.toSet())
         );
     }
